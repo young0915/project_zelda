@@ -16,4 +16,14 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
+*.1.tlog
+*.tlog
 *.vs
+*.exe.recipe
+*.obj
+*.pch
+*.idb
+*.res
+*.ilk
+*.log
+*.exe
