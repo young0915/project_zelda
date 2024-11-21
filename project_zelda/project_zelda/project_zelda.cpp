@@ -1,12 +1,14 @@
-﻿// project_zelda.cpp : 애플리케이션에 대한 진입점을 정의합니다.
+﻿//  : 애플리케이션에 대한 진입점을 정의합니다.
 //
-
+#include "pch.h"
+#include "Game.h"
 #include "framework.h"
 #include "project_zelda.h"
 
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
+HWND g_hwnd;
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
@@ -22,36 +24,49 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-    UNREFERENCED_PARAMETER(hPrevInstance);
-    UNREFERENCED_PARAMETER(lpCmdLine);
-
     // TODO: 여기에 코드를 입력합니다.
 
-    // 전역 문자열을 초기화합니다.
+       // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_PROJECTZELDA, szWindowClass, MAX_LOADSTRING);
+
+    // 1) 윈도우 창 정보 등록
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow))
-    {
+    // 2) 윈도우 창 정보 등록
+    if (!InitInstance(hInstance, nCmdShow))
         return FALSE;
-    }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PROJECTZELDA));
+    Game game;
+    game.Init(g_hwnd);
 
-    MSG msg;
+    MSG msg = {};
+    uint64 prevTick = 0;
 
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (msg.message != WM_QUIT)
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            // 가상 키 메시지를 문자 메시지로 변환
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
+        }
+        else
+        {
+
+            uint64 now = ::GetTickCount64();
+            //if (now - prevTick >= 10)
+            {
+                // 게임 
+                game.Update();
+                game.Render();
+
+                prevTick = now;
+            }
         }
     }
-
     return (int) msg.wParam;
 }
 
@@ -76,8 +91,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PROJECTZELDA));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_PROJECTZELDA);
-    wcex.lpszClassName  = szWindowClass;
+    wcex.lpszMenuName   = nullptr;
+    wcex.lpszClassName  = L"project_zelda";
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     return RegisterClassExW(&wcex);
@@ -96,10 +111,13 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+   RECT windowRect = { 0, 0, GWinSizeX, GWinSizeY };
+   ::AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = CreateWindowW(L"project_zelda", L"Game", WS_OVERLAPPEDWINDOW,
+       CW_USEDEFAULT, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, nullptr, nullptr, hInstance, nullptr);
 
+   g_hwnd = hWnd;
    if (!hWnd)
    {
       return FALSE;
