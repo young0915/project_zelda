@@ -3,6 +3,8 @@
 #include "TimeManager.h"
 #include "InputManager.h"
 #include "SceneManager.h"
+#include "ResourceManager.h"
+#include "SoundManager.h"
 
 
 Game::Game()
@@ -33,13 +35,13 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(TimeManager)->Init();
 	GET_SINGLE(InputManager)->Init(_hwnd);
 	GET_SINGLE(SceneManager)->Init();
+	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"C:\\Users\\ungs0\\project_zelda\\project_zelda\\Resouces"));
+	GET_SINGLE(SoundManager)->Init(hwnd);
 
-	//GET_SINGLE(SceneManager)->ChangeScene(SceneType::MainScene);
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::MainScene);
 
 	// MapTool ÀÛ¾÷.
-	GET_SINGLE(SceneManager)->ChangeScene(SceneType::EditScene);
-
-
+	//GET_SINGLE(SceneManager)->ChangeScene(SceneType::EditScene);
 
 }
 

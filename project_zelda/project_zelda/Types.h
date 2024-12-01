@@ -163,3 +163,10 @@ struct VectorInt
 using Pos = Vector;
 using Vec2 = Vector;
 using Vec2Int = VectorInt;
+
+struct AIInfo
+{
+	int32 maxHp = 0;
+	int32 dmg = 0;
+	float speed = 0;
+};
