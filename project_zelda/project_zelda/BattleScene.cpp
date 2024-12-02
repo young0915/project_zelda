@@ -3,10 +3,12 @@
 #include "TilemapActor.h"
 #include "Tilemap.h"
 #include "ResourceManager.h"
-#include "AI.h"
 #include "Flipbook.h"
 #include "SpriteActor.h"
 #include "Sprite.h"
+#include "InputManager.h"
+#include "Enemy.h"
+
 BattleScene::BattleScene()
 {
 }
@@ -17,22 +19,8 @@ BattleScene::~BattleScene()
 
 void BattleScene::Init()
 {
-	// Load Resource
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tile", L"Sprite\\MapTool\\Tile.bmp", RGB(255, 0, 255));
-	
-	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerDown", L"Sprite\\Player\\PlayerDown.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerUp", L"Sprite\\Player\\PlayerUp.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerLeft", L"Sprite\\Player\\PlayerLeft.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerRight", L"Sprite\\Player\\PlayerRight.bmp", RGB(128, 128, 128));
-	
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Moblin_S", L"Sprite\\Monster\\Moblin_S.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Moblin_A", L"Sprite\\Monster\\Moblin_A.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Octoroc", L"Sprite\\Monster\\Octoroc.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Zol", L"Sprite\\Monster\\Zol.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Darknut", L"Sprite\\Monster\\Darknut.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Bat", L"Sprite\\Monster\\Bat.bmp", RGB(128, 128, 128));
 
-	
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Tile_0", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 48, 0, 48, 48);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Tile_1", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 0, 0, 48, 48);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Tile_2", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 96, 0, 48, 48);
@@ -44,217 +32,85 @@ void BattleScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Tile_8", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 96, 96, 48, 48);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Tile_9", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 0, 144, 48, 48);
 
+	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerDown", L"Sprite\\Player\\PlayerDown.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerUp", L"Sprite\\Player\\PlayerUp.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerLeft", L"Sprite\\Player\\PlayerLeft.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerRight", L"Sprite\\Player\\PlayerRight.bmp", RGB(128, 128, 128));
 
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Moblin_S", L"Sprite\\Monster\\Moblin_S.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Moblin_A", L"Sprite\\Monster\\Moblin_A.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Octoroc", L"Sprite\\Monster\\Octoroc.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Zol", L"Sprite\\Monster\\Zol.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Darknut", L"Sprite\\Monster\\Darknut.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Bat", L"Sprite\\Monster\\Bat.bmp", RGB(128, 128, 128));
 
-	 // Tile Load
+	LoadResource(_stageIndex);
+	// Tile Load
+	SetStage(_stageIndex);
+	// stage 
+	SpawnEnemy(_stageIndex);
+
+	if (!_init)
 	{
-		TilemapActor* actor = new TilemapActor();
-		AddActor(actor);
-
-		_tilemapActor = actor;
+		// Player
 		{
-			auto* tm = GET_SINGLE(ResourceManager)->CreateTilemap(L"Tilemap_01");
-			tm->SetMapSize({ 20, 20 });
-			tm->SetTileSize(48);
-
-			GET_SINGLE(ResourceManager)->LoadTilemap(L"Tilemap_01", L"Tilemap\\Tilemap_01.txt");
-
-			_tilemapActor->SetTilemap(tm);
-			_tilemapActor->SetShowMap(true);
+			/*
+			AIStatus playerStatus;
+			playerStatus.maxHp = 10;
+			playerStatus.dmg = 5;
+			playerStatus.speed = 10.0f;
+			AI* player = new AI(L"Link", playerStatus, AITYPE::HERO, AttackType::MELEE_ATTACK, { 8,13 });
+			AddActor(player);
+			*/
 		}
-	}
-	
-#pragma region Octoroc Ani
-	// Move
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Octoroc");
-		fb->SetInfo({ texture, L"FB_MoveDown_Octoroc", {100, 100}, 0, 1, 0, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Octoroc");
-		fb->SetInfo({ texture, L"FB_MoveLeft_Octoroc", {100, 100}, 0, 1, 2, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Octoroc");
-		fb->SetInfo({ texture, L"FB_MoveRight_Octoroc", {100, 100}, 0, 1, 4, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Octoroc");
-		fb->SetInfo({ texture, L"FB_MoveUp_Octoroc", {100, 100}, 0, 1, 6, 0.5f });
-	}
-	// Attack
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Octoroc");
-		fb->SetInfo({ texture, L"FB_MoveDown_Octoroc", {100, 100}, 0, 1, 1, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Octoroc");
-		fb->SetInfo({ texture, L"FB_MoveLeft_Octoroc", {100, 100}, 0, 1, 3, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Octoroc");
-		fb->SetInfo({ texture, L"FB_MoveRight_Octoroc", {100, 100}, 0, 1, 5, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Octoroc");
-		fb->SetInfo({ texture, L"FB_MoveUp_Octoroc", {100, 100}, 0, 1, 7, 0.5f });
-	}
-#pragma endregion
 
-#pragma region Darknut Ani
+		_init = true;
+	}
+
+
+	Super::Init();
+}
+
+void BattleScene::Update()
+{
+	Super::Update();
+
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
+	{
+		AIClear();
+
+		if (_stageIndex < 6)
+		{
+			_stageIndex++;
+
+			Init();
+		}
+
+	}
+	// Data 불러오기
 	// 
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Darknut");
-		fb->SetInfo({ texture, L"FB_MoveDown_Darknut", {300, 300}, 0, 3, 0, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Darknut");
-		fb->SetInfo({ texture, L"FB_MoveLeft_Darknut", {300, 300}, 0, 3, 2, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Darknut");
-		fb->SetInfo({ texture, L"FB_MoveRight_Darknut", {300, 300}, 0, 3, 4, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Darknut");
-		fb->SetInfo({ texture, L"FB_MoveUp_Darknut",{300, 300}, 0, 3, 6, 0.5f });
-	}
 
-	//Attack
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Darknut");
-		fb->SetInfo({ texture, L"FB_MoveDown_Darknut", {300, 300}, 0, 5, 1, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Darknut");
-		fb->SetInfo({ texture, L"FB_MoveLeft_Darknut", {300, 300}, 0, 5, 3, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Darknut");
-		fb->SetInfo({ texture, L"FB_MoveRight_Darknut", {300, 300}, 0, 5, 5, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Darknut");
-		fb->SetInfo({ texture, L"FB_MoveUp_Darknut",{300, 300}, 0,5, 7, 0.5f });
-	}
-#pragma endregion
+}
 
-#pragma region Moblin_A Ani
-	// 
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Moblin_S");
-		fb->SetInfo({ texture, L"FB_MoveDown_Moblin_S", {300, 300}, 0, 3, 0, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Moblin_S");
-		fb->SetInfo({ texture, L"FB_MoveLeft_Moblin_S", {300, 300},  0, 3, 2, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Moblin_S");
-		fb->SetInfo({ texture, L"FB_MoveRight_Moblin_S", {300, 300}, 0, 3, 4, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Moblin_S");
-		fb->SetInfo({ texture, L"FB_MoveUp_Moblin_S",{300, 300},  0,3, 6, 0.5f });
-	}
+void BattleScene::Render(HDC hdc)
+{
+	Super::Render(hdc);
 
-	//Attack
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Moblin_S");
-		fb->SetInfo({ texture, L"FB_MoveDown_Moblin_S", {300, 300}, 0, 3, 1, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Moblin_S");
-		fb->SetInfo({ texture, L"FB_MoveLeft_Moblin_S", {300, 300},  0, 3, 3, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Moblin_S");
-		fb->SetInfo({ texture, L"FB_MoveRight_Moblin_S", {300, 300}, 0, 3, 5, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Moblin_S");
-		fb->SetInfo({ texture, L"FB_MoveUp_Moblin_S",{300, 300},  0,3, 7, 0.5f });
-	}
-#pragma endregion
+}
 
-#pragma region Moblin_S Ani
-	// 
+void BattleScene::LoadResource(int stage)
+{
+	switch (stage)
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Moblin_A");
-		fb->SetInfo({ texture, L"FB_MoveDown_Moblin_A", {300, 300}, 0, 3, 0, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Moblin_A");
-		fb->SetInfo({ texture, L"FB_MoveLeft_Moblin_A", {300, 300},  0, 3, 2, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Moblin_A");
-		fb->SetInfo({ texture, L"FB_MoveRight_Moblin_A", {300, 300}, 0, 3, 4, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Moblin_A");
-		fb->SetInfo({ texture, L"FB_MoveUp_Moblin_A",{300, 300},  0,3, 6, 0.5f });
-	}
-
-	//Attack
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Moblin_A");
-		fb->SetInfo({ texture, L"FB_MoveDown_Moblin_A", {300, 300}, 0, 3, 1, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Moblin_A");
-		fb->SetInfo({ texture, L"FB_MoveLeft_Moblin_A", {300, 300},  0, 3, 3, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Moblin_A");
-		fb->SetInfo({ texture, L"FB_MoveRight_Darknut", {300, 300}, 0, 3, 5, 0.5f });
-	}
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Moblin_A");
-		fb->SetInfo({ texture, L"FB_MoveUp_Moblin_A",{300, 300},  0,3, 7, 0.5f });
-	}
-#pragma endregion
-
+	case 1:
 #pragma region Bat ani
-	// 
+		// 
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Bat");
 		fb->SetInfo({ texture, L"FB_MoveDown_Bat", {50, 50}, 0, 3, 0, 0.5f });
 	}
-	
+
 #pragma endregion
 
 #pragma region Zol ani
@@ -272,88 +128,336 @@ void BattleScene::Init()
 		fb->SetInfo({ texture, L"FB_MoveDown_Zol", {50, 50}, 0, 3, 0, 0.5f });
 	}
 #pragma endregion
+		break;
 
-	
+	case 2:
+#pragma region Octoroc Ani
+		// Move
+		{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Octoroc");
+		fb->SetInfo({ texture, L"FB_MoveDown_Octoroc", {100, 100}, 0, 1, 0, 0.5f });
+	}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Octoroc");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Octoroc", {100, 100}, 0, 1, 2, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Octoroc");
+			fb->SetInfo({ texture, L"FB_MoveRight_Octoroc", {100, 100}, 0, 1, 4, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Octoroc");
+			fb->SetInfo({ texture, L"FB_MoveUp_Octoroc", {100, 100}, 0, 1, 6, 0.5f });
+		}
+		// Attack
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Octoroc");
+			fb->SetInfo({ texture, L"FB_MoveDown_Octoroc", {100, 100}, 0, 1, 1, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Octoroc");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Octoroc", {100, 100}, 0, 1, 3, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Octoroc");
+			fb->SetInfo({ texture, L"FB_MoveRight_Octoroc", {100, 100}, 0, 1, 5, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Octoroc");
+			fb->SetInfo({ texture, L"FB_MoveUp_Octoroc", {100, 100}, 0, 1, 7, 0.5f });
+		}
+#pragma endregion
+		break;
 
-	// AI Load
+	case 3:
+#pragma region Moblin_A Ani
+		// 
+		{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Moblin_S");
+		fb->SetInfo({ texture, L"FB_MoveDown_Moblin_S", {300, 300}, 0, 3, 0, 0.5f });
+	}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Moblin_S");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Moblin_S", {300, 300},  0, 3, 2, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Moblin_S");
+			fb->SetInfo({ texture, L"FB_MoveRight_Moblin_S", {300, 300}, 0, 3, 4, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Moblin_S");
+			fb->SetInfo({ texture, L"FB_MoveUp_Moblin_S",{300, 300},  0,3, 6, 0.5f });
+		}
+
+		//Attack
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Moblin_S");
+			fb->SetInfo({ texture, L"FB_MoveDown_Moblin_S", {300, 300}, 0, 3, 1, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Moblin_S");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Moblin_S", {300, 300},  0, 3, 3, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Moblin_S");
+			fb->SetInfo({ texture, L"FB_MoveRight_Moblin_S", {300, 300}, 0, 3, 5, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_S");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Moblin_S");
+			fb->SetInfo({ texture, L"FB_MoveUp_Moblin_S",{300, 300},  0,3, 7, 0.5f });
+		}
+#pragma endregion
+
+#pragma region Moblin_S Ani
+		// 
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Moblin_A");
+			fb->SetInfo({ texture, L"FB_MoveDown_Moblin_A", {300, 300}, 0, 3, 0, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Moblin_A");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Moblin_A", {300, 300},  0, 3, 2, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Moblin_A");
+			fb->SetInfo({ texture, L"FB_MoveRight_Moblin_A", {300, 300}, 0, 3, 4, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Moblin_A");
+			fb->SetInfo({ texture, L"FB_MoveUp_Moblin_A",{300, 300},  0,3, 6, 0.5f });
+		}
+
+		//Attack
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Moblin_A");
+			fb->SetInfo({ texture, L"FB_MoveDown_Moblin_A", {300, 300}, 0, 3, 1, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Moblin_A");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Moblin_A", {300, 300},  0, 3, 3, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Moblin_A");
+			fb->SetInfo({ texture, L"FB_MoveRight_Darknut", {300, 300}, 0, 3, 5, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin_A");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Moblin_A");
+			fb->SetInfo({ texture, L"FB_MoveUp_Moblin_A",{300, 300},  0,3, 7, 0.5f });
+		}
+#pragma endregion
+		break;
+
+	case 4:
+#pragma region Darknut Ani
+		// 
+		{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Darknut");
+		fb->SetInfo({ texture, L"FB_MoveDown_Darknut", {300, 300}, 0, 3, 6, 0.5f });
+	}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Darknut");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Darknut", {300, 300}, 0, 3, 2, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Darknut");
+			fb->SetInfo({ texture, L"FB_MoveRight_Darknut", {300, 300}, 0, 3, 4, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Darknut");
+			fb->SetInfo({ texture, L"FB_MoveUp_Darknut",{300, 300}, 0, 3, 0, 0.5f });
+		}
+
+		//Attack
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Darknut");
+			fb->SetInfo({ texture, L"FB_MoveDown_Darknut", {300, 300}, 0, 5, 1, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Darknut");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Darknut", {300, 300}, 0, 5, 3, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Darknut");
+			fb->SetInfo({ texture, L"FB_MoveRight_Darknut", {300, 300}, 0, 5, 5, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Darknut");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Darknut");
+			fb->SetInfo({ texture, L"FB_MoveUp_Darknut",{300, 300}, 0,5, 7, 0.5f });
+		}
+#pragma endregion
+
+		break;
+	case 5:
+		break;
+	}
+}
+
+void BattleScene::SetStage(int stage)
+{
+	// TO-DO 바이너리 파일로 바꿔놓을 것
+	wstring stageName;
+
+	switch (stage)
 	{
-		/*
-		AIInfo playerInfo;
-		playerInfo.maxHp = 10;
-		playerInfo.dmg = 5;
-		playerInfo.speed = 10.0f;
-		AI* player = new AI(L"Link", playerInfo, AITYPE::HERO, AttackType::MELEE_ATTACK, { 0,0 });
-		AddActor(player);
-		*/
-
-		//// darknut
-		AIInfo darknutInfo;
-		darknutInfo.maxHp = 10;
-		darknutInfo.dmg = 5;
-		darknutInfo.speed = 10.0f;
-		AI* darknut = new AI(L"Darknut", darknutInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, { 0,0 });
-		AddActor(darknut);
-
-
-		//// Bow Moblin
-		AIInfo bow_moblinInfo;
-		bow_moblinInfo.maxHp = 10;
-		bow_moblinInfo.dmg = 5;
-		bow_moblinInfo.speed = 10.0f;
-		AI* bow_moblin = new AI(L"Moblin_A", bow_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, { 0,0 });
-		AddActor(bow_moblin);
-
-		////Spear Moblin
-		AIInfo spear_moblinInfo;
-		spear_moblinInfo.maxHp = 10;
-		spear_moblinInfo.dmg = 5;
-		spear_moblinInfo.speed = 10.0f;
-		AI* spear_moblin = new AI(L"Moblin_S", spear_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, { 0,0 });
-		AddActor(spear_moblin);
-
-		// Octorok
-		AIInfo octorokInfo;
-		octorokInfo.maxHp = 10;
-		octorokInfo.dmg = 5;
-		octorokInfo.speed = 10.0f;
-		AI* octorok = new AI(L"Octoroc", octorokInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, { 0,0 });
-		octorok->SetPos({ 100, 100 });
-		AddActor(octorok);
-
-		AIInfo zolInfo;
-		zolInfo.maxHp = 10;
-		zolInfo.dmg = 5;
-		zolInfo.speed = 10.0f;
-		AI* zol = new AI(L"Zol", zolInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, { 0,0 });
-		AddActor(zol);
-
-		AIInfo KeeseInfo;
-		KeeseInfo.maxHp = 10;
-		KeeseInfo.dmg = 5;
-		KeeseInfo.speed = 10.0f;
-		AI* Keese = new AI(L"Bat", zolInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, { 0,0 });
-		AddActor(Keese);
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+		stageName = L"Tilemap_01";
+		break;
+	case 5:
+		stageName = L"Tilemap_Boss";
+		break;
 	}
 
+	TilemapActor* actor = new TilemapActor();
+	AddActor(actor);
+	_tilemapActor = actor;
+	{
+		auto* tm = GET_SINGLE(ResourceManager)->CreateTilemap(stageName);
+		tm->SetMapSize({ 20, 20 });
+		tm->SetTileSize(48);
 
+		GET_SINGLE(ResourceManager)->LoadTilemap(stageName, L"Tilemap\\" + stageName + L".txt");
 
-
-	Super::Init();
+		_tilemapActor->SetTilemap(tm);
+		_tilemapActor->SetShowMap(true);
+	}
 }
 
-void BattleScene::Update()
+void BattleScene::SpawnEnemy(int stage)
 {
-	Super::Update();
+	switch (stage)
+	{
+	case 1:
+		// zol 4, bat 2 
+		for (int i = 0; i < 4; i++)
+		{
+			Vec2Int pos = { 3 + (i % 2) * 10, 3 + (i / 2) * 6 };
 
+			AIStatus zolInfo;
+			zolInfo.maxHp = 10;
+			zolInfo.dmg = 5;
+			zolInfo.speed = 10.0f;
+			Enemy* zol = new Enemy(L"Zol", zolInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.0f);
+			AddActor(zol);
+		}
 
-	// Data 불러오기
-	// 
+		for (int i = 0; i < 2; i++)
+		{
+			Vec2Int pos = { 5 + (i != 0) * 6, 6 };
 
+			AIStatus batInfo;
+			batInfo.maxHp = 10;
+			batInfo.dmg = 5;
+			batInfo.speed = 10.0f;
+			Enemy* bat = new Enemy(L"Bat", batInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.0f);
+			AddActor(bat);
+		}
+		break;
+
+	case 2:
+		// oct 4
+		for (int i = 0; i < 4; i++)
+		{
+			Vec2Int pos = { 3 + (i % 2) * 10, 3 + (i / 2) * 6 };
+			AIStatus octorokInfo;
+			octorokInfo.maxHp = 10;
+			octorokInfo.dmg = 5;
+			octorokInfo.speed = 10.0f;
+			Enemy* octorok = new Enemy(L"Octoroc", octorokInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.5f);
+			AddActor(octorok);
+		}
+		break;
+
+	case 3:
+		for (int i = 0; i < 2; i++)
+		{
+			Vec2Int pos = { 3 + (i != 0) * 10, 3 + (i != 0) * 6 };
+
+			AIStatus bow_moblinInfo;
+			bow_moblinInfo.maxHp = 10;
+			bow_moblinInfo.dmg = 5;
+			bow_moblinInfo.speed = 10.0f;
+			Enemy* bow_moblin = new Enemy(L"Moblin_A", bow_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.0f);
+			AddActor(bow_moblin);
+		}
+
+		for (int i = 0; i < 2; i++)
+		{
+			Vec2Int pos = { 3 + (i == 0) * 10, 3 + (i != 0) * 6 };
+
+			AIStatus spear_moblinInfo;
+			spear_moblinInfo.maxHp = 10;
+			spear_moblinInfo.dmg = 5;
+			spear_moblinInfo.speed = 10.0f;
+			Enemy* spear_moblin = new Enemy(L"Moblin_S", spear_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.0f);
+			AddActor(spear_moblin);
+		}
+
+		break;
+	case 4:
+		for (int i = 0; i < 2; i++)
+		{
+			Vec2Int pos = { 3 + (i != 0) * 10, 6 };
+
+			AIStatus darknutInfo;
+			darknutInfo.maxHp = 10;
+			darknutInfo.dmg = 5;
+			darknutInfo.speed = 10.0f;
+			Enemy* darknut = new Enemy(L"Darknut", darknutInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.0f);
+			AddActor(darknut);
+		}
+		break;
+	case 5:
+
+		break;
+
+	}
 }
 
-void BattleScene::Render(HDC hdc)
+void BattleScene::AIClear()
 {
-	Super::Render(hdc);
+	// Enemy
+	for (Actor* enemy : _actors[LAYER_MONSTER])
+		SAFE_DELETE(enemy);
+
+	_actors[LAYER_MONSTER].clear();
+
+	// tile
+	_tilemapActor = nullptr;
 
 }
 
@@ -378,6 +482,5 @@ Vec2 BattleScene::ConvertPos(Vec2Int cellPos)
 
 	ret.x = pos.x + cellPos.x * size + (size / 2);
 	ret.y = pos.y + cellPos.y * size + (size / 2);
-
 	return ret;
 }

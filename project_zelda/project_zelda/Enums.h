@@ -12,6 +12,9 @@ enum LAYER_TYPE
 {
 	LAYER_BACKGROUND,
 	LAYER_OBJECT,
+	LAYER_AI,
+	LAYER_MONSTER,
+	LAYER_HERO,
 	// ...
 	LAYER_UI,
 
@@ -67,10 +70,10 @@ enum Dir
 };
 
 
-enum PlayerState
-{
-	Idle,
-	Move,
-	Attack_1,
-	Attack_2
-};
+//enum PlayerState
+//{
+//	Idle,
+//	Move,
+//	Attack_1,
+//	Attack_2
+//};

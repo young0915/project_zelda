@@ -24,7 +24,7 @@ public:
 
 	Component* GetCollider();
 
-	// OnCollisionEnter2D / OnCollisionExit2D
+	// OnCollisionEnter2D // OnCollisionExit2D
 	virtual void OnComponentBeginOverlap(Collider* collider, Collider* other);
 	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
 
