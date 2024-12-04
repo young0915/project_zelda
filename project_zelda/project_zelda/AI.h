@@ -32,6 +32,9 @@ protected:
 
 protected:
 	Vec2Int _cellPos = {};
+	Flipbook* _flipbookMove[4] = {};
+	Flipbook* _flipbookAttack[4] = {};
+
 
 public:
 

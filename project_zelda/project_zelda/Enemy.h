@@ -19,9 +19,6 @@ protected:
 
 	virtual void UpdateAnimation() override;
 public:
-    Flipbook* _flipbookMove[4] = {};
-    Flipbook* _flipbookAttack[4] = {};
-
 	Dir _dir = DIR_DOWN;
 
 	int _moveIndex = 0;
