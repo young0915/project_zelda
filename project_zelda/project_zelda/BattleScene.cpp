@@ -111,6 +111,12 @@ void BattleScene::LoadResource(int stage)
 		fb->SetInfo({ texture, L"FB_MoveDown_Bat", {50, 50}, 0, 3, 0, 0.5f });
 	}
 
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Bat");
+		fb->SetInfo({ texture, L"FB_MoveDown_Bat", {50, 50}, 0, 3, 0, 0.5f });
+	}
+
 #pragma endregion
 
 #pragma region Zol ani
@@ -125,7 +131,7 @@ void BattleScene::LoadResource(int stage)
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Zol");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Zol");
-		fb->SetInfo({ texture, L"FB_MoveDown_Zol", {50, 50}, 0, 3, 0, 0.5f });
+		fb->SetInfo({ texture, L"FB_MoveDown_Zol", {50, 50}, 0, 3, 1, 0.5f });
 	}
 #pragma endregion
 		break;
