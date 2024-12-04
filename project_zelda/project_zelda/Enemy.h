@@ -14,13 +14,10 @@ protected:
 	virtual void Render(HDC hdc) override;
 
 	virtual void TickMove() override;
-	void Go(Vec2Int nextPos);
 	virtual void TickAttack() override;
 
 	virtual void UpdateAnimation() override;
 public:
-	Dir _dir = DIR_DOWN;
-
 	int _moveIndex = 0;
 
 private :

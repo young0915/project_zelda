@@ -173,11 +173,6 @@ float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 }
 
-void Enemy::Go(Vec2Int nextPos)
-{
-}
-
-
 
 void Enemy::TickAttack()
 {

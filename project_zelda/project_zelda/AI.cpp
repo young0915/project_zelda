@@ -28,6 +28,7 @@ AI::~AI()
 void AI::BeginPlay()
 {
 	Super::BeginPlay();
+	// TO-DO 방향 설정하기.
 	SetDir(DIR_DOWN);
 	SetCellPos(_cellPos, true);
 }
