@@ -69,11 +69,3 @@ enum Dir
 	DIR_RIGHT,
 };
 
-
-//enum PlayerState
-//{
-//	Idle,
-//	Move,
-//	Attack_1,
-//	Attack_2
-//};

@@ -14,6 +14,7 @@ protected:
 	virtual void Render(HDC hdc) override;
 
 	virtual void TickMove() override;
+	void Go(Vec2Int nextPos);
 	virtual void TickAttack() override;
 
 	virtual void UpdateAnimation() override;
@@ -28,6 +29,8 @@ public:
 private :
 	float _moveTime = 0.0f;
 	float _waitTime = 0.0f;
+
+	Vec2Int _destPos = {};
 
 
 	// octor, zol, moblin

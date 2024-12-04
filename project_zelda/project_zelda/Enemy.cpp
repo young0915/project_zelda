@@ -19,6 +19,7 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 
 	SetLayer(LAYER_MONSTER);
 
+	// TO-DO 데이터 맞추기.
 	// // octor, zol, moblin
 	if (_aiName == L"Zol" || _aiName == L"Octoroc" || _aiName == L"Moblin_S" || _aiName == L"Moblin_A")
 	{
@@ -33,8 +34,8 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 		{
 			_patrolRoute.push_back({ 13,3 });
 			_patrolRoute.push_back({ 13,5 });
-			_patrolRoute.push_back({ 10,5 });
-			_patrolRoute.push_back({ 10,3 });
+			_patrolRoute.push_back({ 9,5 });
+			_patrolRoute.push_back({ 9,3 });
 		}
 		else if (pos.x == 3 && pos.y == 9)
 		{
@@ -47,8 +48,8 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 		{
 			_patrolRoute.push_back({ 13,9 });
 			_patrolRoute.push_back({ 13,7 });
-			_patrolRoute.push_back({ 10,7 });
-			_patrolRoute.push_back({ 10,9 });
+			_patrolRoute.push_back({ 9,7 });
+			_patrolRoute.push_back({ 9,9 });
 		}
 	}
 	else if (_aiName == L"Bat")
@@ -119,42 +120,74 @@ void Enemy::Render(HDC hdc)
 void Enemy::TickMove()
 {
 	Super::TickMove();
-
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	Vec2Int nextPos = {  };
+	
+float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	_waitTime += deltaTime;
 
+	if (_cellPos.x == _patrolRoute[_moveIndex].x && _cellPos.y == _patrolRoute[_moveIndex].y)
+	{
+		if (_moveIndex < _patrolRoute.size() - 1)
+			_moveIndex++;
+		else
+			_moveIndex = 0;
+	}
+
+
+	if (_cellPos.x == _patrolRoute[_moveIndex].x &&
+		_cellPos.y != _patrolRoute[_moveIndex].y)
+	{
+		if (_cellPos.y > _patrolRoute[_moveIndex].y)
+		{
+			nextPos = _cellPos + deltaXY[DIR_UP];
+			if (CanGo(nextPos))
+				_pos.y -= _aiInfo.speed * deltaTime;
+		}
+		else if (_cellPos.y < _patrolRoute[_moveIndex].y)
+		{
+			nextPos = _cellPos + deltaXY[DIR_DOWN];
+			if (CanGo(nextPos))
+				_pos.y += _aiInfo.speed * deltaTime;
+
+		}
+	}
+	else if (_cellPos.x != _patrolRoute[_moveIndex].x &&
+		_cellPos.y == _patrolRoute[_moveIndex].y)
+	{
+
+		if (_cellPos.x > _patrolRoute[_moveIndex].x)
+		{
+			nextPos = _cellPos + deltaXY[DIR_LEFT];
+			if (CanGo(nextPos))
+				_pos.x -= _aiInfo.speed * deltaTime;
+		}
+		else if (_cellPos.x < _patrolRoute[_moveIndex].x)
+		{
+			nextPos = _cellPos + deltaXY[DIR_RIGHT];
+			if (CanGo(nextPos))
+				_pos.x += _aiInfo.speed * deltaTime;
+		}
+	}
+
+
 	if (_waitTime >= _moveTime)
 	{
-		_cellPos = _patrolRoute[_moveIndex];
-		SetCellPos(_cellPos, true);
-
-		if (_moveIndex < _patrolRoute.size() - 1) 
-			_moveIndex++;
-		else 
-			_moveIndex = 0;
-
-		_waitTime = 0;
+		if (nextPos.x != 0 || nextPos.y != 0)
+		{
+			SetCellPos(nextPos, true);
+			_waitTime = 0;
+		}
 	}
-	
-
-	//switch (_dir)
-	//{
-	//case DIR_UP:
-	//	_pos.y -= _aiInfo.speed * deltaTime;
-	//	break;
-	//case DIR_DOWN:
-	//	_pos.y += _aiInfo.speed * deltaTime;
-	//	break;
-	//case DIR_LEFT:
-	//	_pos.x -= _aiInfo.speed * deltaTime;
-	//	break;
-	//case DIR_RIGHT:
-	//	_pos.x += _aiInfo.speed * deltaTime;
-	//	break;
-	//}
 
 }
+
+void Enemy::Go(Vec2Int nextPos)
+{
+}
+
+
 
 void Enemy::TickAttack()
 {
