@@ -1,7 +1,6 @@
 #pragma once
 #include "FlipbookActor.h"
-
-
+class Flipbook;
 class AI :
     public FlipbookActor
 {
