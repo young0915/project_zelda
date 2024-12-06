@@ -42,6 +42,9 @@ void Hero::Tick()
 	case AIAniState::ATTACK:
 		TickAttack(AIAniState::ATTACK);
 		break;
+	case AIAniState::ATTACK_2:
+		TickAttack(AIAniState::ATTACK_2);
+		break;
 	case AIAniState::MOVE:
 		TickMove();
 		break;
@@ -112,22 +115,6 @@ void Hero::TickMove()
 		}
 	}
 }
-//
-//void Hero::TickAttack(AIAniState state)
-//{
-//	Super::TickAttack(state);
-//
-//	/*float deltatime = GET_SINGLE(TimeManager)->GetDeltaTime();
-//	_waitTime += deltatime;
-//
-//	SetState(AIAniState::ATTACK);
-//
-//	if (_waitTime >= _attackTime)
-//	{
-//		SetState(AIAniState::IDLE);
-//		_waitTime = 0;
-//	}*/
-//}
 
 void Hero::UpdateAnimation()
 {
@@ -139,6 +126,9 @@ void Hero::UpdateAnimation()
 		break;
 	case AIAniState::ATTACK:
 		SetFlipbook(_flipbookAttack[_dir]);
+		break;
+	case AIAniState::ATTACK_2:
+		SetFlipbook(_flipbookAttackBow[_dir]);
 		break;
 	case AIAniState::MOVE:
 		SetFlipbook(_flipbookMove[_dir]);

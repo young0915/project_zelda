@@ -21,9 +21,7 @@ AI::AI(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2
 
 }
 
-AI::~AI()
-{
-}
+AI::~AI() {}
 
 void AI::BeginPlay()
 {
@@ -43,14 +41,9 @@ void AI::Render(HDC hdc)
 	Super::Render(hdc);
 }
 
-void AI::TickIdle()
-{
-}
+void AI::TickIdle(){}
 
-void AI::TickMove()
-{
-
-}
+void AI::TickMove() {}
 
 void AI::TickAttack(AIAniState state)
 {
@@ -78,9 +71,7 @@ void AI::SetState(AIAniState state)
 	UpdateAnimation();
 }
 
-void AI::UpdateAnimation()
-{
-}
+void AI::UpdateAnimation() {}
 
 void AI::SetDir(Dir dir)
 {
