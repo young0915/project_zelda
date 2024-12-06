@@ -22,6 +22,8 @@ protected:
 	virtual void UpdateAnimation() override;
 
 public:
+	void SetMove(Dir dir);
+public:
 
 	Flipbook* _flipbookIdle[4] = {};
 	float _waitTime = 0.0f;
