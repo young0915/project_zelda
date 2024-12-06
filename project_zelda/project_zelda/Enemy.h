@@ -5,7 +5,7 @@ class Enemy : public AI
 {
 	using Super = AI;
 public:
-    Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float movetime);
+    Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float movetime, float attackTime);
     ~Enemy();
 protected:
 	virtual void BeginPlay() override;
@@ -13,7 +13,6 @@ protected:
 	virtual void Render(HDC hdc) override;
 
 	virtual void TickMove() override;
-	virtual void TickAttack() override;
 
 	virtual void UpdateAnimation() override;
 public:

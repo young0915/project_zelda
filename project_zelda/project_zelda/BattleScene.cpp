@@ -59,7 +59,7 @@ void BattleScene::Init()
 			playerStatus.maxHp = 10;
 			playerStatus.dmg = 5;
 			playerStatus.speed = 200.0f;
-			Hero* player = new Hero(L"Link", playerStatus, AITYPE::HERO, AttackType::MELEE_ATTACK, { 8,9 });
+			Hero* player = new Hero(L"Link", playerStatus, AITYPE::HERO, AttackType::MELEE_ATTACK, { 8,9 }, 0.5f);
 			AddActor(player);
 		}
 
@@ -371,7 +371,7 @@ break;
 			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Link");
 			fb->SetInfo({ texture, L"FB_MoveRight_Link", {200, 200}, 0, 9, 1, 0.5f });
 		}
-		// SKILL
+		// Attack 1
 		{
 			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
 			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Link");
@@ -391,6 +391,27 @@ break;
 			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
 			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Link");
 			fb->SetInfo({ texture, L"FB_MoveRight_Link", {200, 200}, 0, 7, 3, 0.5f });
+		}
+		// Attack 2
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackBowUp_Link");
+			fb->SetInfo({ texture, L"FB_MoveUp_Link", {200, 200}, 0, 9, 5, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackBowDown_Link");
+			fb->SetInfo({ texture, L"FB_MoveDown_Link", {200, 200}, 0, 9, 5, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackBowLeft_Link");
+			fb->SetInfo({ texture, L"FB_MoveLeft_Link", {200, 200}, 0, 9, 5, 0.5f });
+		}
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackBowRight_Link");
+			fb->SetInfo({ texture, L"FB_MoveRight_Link", {200, 200}, 0, 9,5, 0.5f });
 		}
 	}
 #pragma endregion
@@ -444,7 +465,7 @@ void BattleScene::SpawnEnemy(int stage)
 			zolInfo.maxHp = 10;
 			zolInfo.dmg = 5;
 			zolInfo.speed = 15.0f;
-			Enemy* zol = new Enemy(L"Zol", zolInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.5f);
+			Enemy* zol = new Enemy(L"Zol", zolInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.5f, 0.5f);
 			AddActor(zol);
 		}
 
@@ -456,7 +477,7 @@ void BattleScene::SpawnEnemy(int stage)
 			batInfo.maxHp = 10;
 			batInfo.dmg = 5;
 			batInfo.speed = 18.0f;
-			Enemy* bat = new Enemy(L"Bat", batInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.9f);
+			Enemy* bat = new Enemy(L"Bat", batInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.9f, 0.5f);
 			AddActor(bat);
 		}
 		break;
@@ -470,7 +491,7 @@ void BattleScene::SpawnEnemy(int stage)
 			octorokInfo.maxHp = 10;
 			octorokInfo.dmg = 5;
 			octorokInfo.speed = 17.0f;
-			Enemy* octorok = new Enemy(L"Octoroc", octorokInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.2f);
+			Enemy* octorok = new Enemy(L"Octoroc", octorokInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.2f, 0.5f);
 			AddActor(octorok);
 		}
 		break;
@@ -484,7 +505,7 @@ void BattleScene::SpawnEnemy(int stage)
 			bow_moblinInfo.maxHp = 10;
 			bow_moblinInfo.dmg = 5;
 			bow_moblinInfo.speed = 13.0f;
-			Enemy* bow_moblin = new Enemy(L"Moblin_A", bow_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.5f);
+			Enemy* bow_moblin = new Enemy(L"Moblin_A", bow_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.5f, 0.5f);
 			AddActor(bow_moblin);
 		}
 
@@ -496,7 +517,7 @@ void BattleScene::SpawnEnemy(int stage)
 			spear_moblinInfo.maxHp = 10;
 			spear_moblinInfo.dmg = 5;
 			spear_moblinInfo.speed = 14.0f;
-			Enemy* spear_moblin = new Enemy(L"Moblin_S", spear_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.8f);
+			Enemy* spear_moblin = new Enemy(L"Moblin_S", spear_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.8f, 0.5f);
 			AddActor(spear_moblin);
 		}
 
@@ -510,7 +531,7 @@ void BattleScene::SpawnEnemy(int stage)
 			darknutInfo.maxHp = 10;
 			darknutInfo.dmg = 5;
 			darknutInfo.speed = 19.0f;
-			Enemy* darknut = new Enemy(L"Darknut", darknutInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.6f);
+			Enemy* darknut = new Enemy(L"Darknut", darknutInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.6f, 0.5f);
 			AddActor(darknut);
 		}
 		break;

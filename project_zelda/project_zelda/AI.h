@@ -6,7 +6,7 @@ class AI :
 {
     using Super = FlipbookActor;
 public:
-    AI(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int Pos);
+    AI(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int Pos, float attackTime);
     ~AI();
 
 protected:
@@ -16,7 +16,7 @@ protected:
 
 	virtual void TickIdle();
 	virtual void TickMove();
-	virtual void TickAttack();
+	virtual void TickAttack(AIAniState state);
 
 	virtual void SetState(AIAniState state);
 
@@ -33,6 +33,9 @@ protected:
 	Vec2Int _cellPos = {};
 	Flipbook* _flipbookMove[4] = {};
 	Flipbook* _flipbookAttack[4] = {};
+
+	float _waitAttackTime = 0.0f;
+	float _attackTime = 0.0f;
 
 
 public:

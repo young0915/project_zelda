@@ -6,8 +6,8 @@
 #include "BattleScene.h"
 #include "ResourceManager.h"
 
-AI::AI(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos) 
-	:_aiName(aiName), _aiInfo(info), _aiType(aiType),_attackType(attackType), _cellPos(pos)
+AI::AI(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float attackTime)
+	:_aiName(aiName), _aiInfo(info), _aiType(aiType), _attackType(attackType), _cellPos(pos) , _attackTime(attackTime)
 {
 	_flipbookMove[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoveUp_" + _aiName);
 	_flipbookMove[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoveDown_" + _aiName);
@@ -49,11 +49,24 @@ void AI::TickIdle()
 
 void AI::TickMove()
 {
-	
+
 }
 
-void AI::TickAttack()
+void AI::TickAttack(AIAniState state)
 {
+	if (state == AIAniState::NONE || state == AIAniState::IDLE || state == AIAniState::DIE || state == AIAniState::MOVE)
+		return;
+
+	float deltatime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	_waitAttackTime += deltatime;
+
+	SetState(state);
+
+	if (_waitAttackTime >= _attackTime)
+	{
+		SetState(AIAniState::IDLE);
+		_waitAttackTime = 0;
+	}
 }
 
 void AI::SetState(AIAniState state)

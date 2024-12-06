@@ -27,6 +27,8 @@ enum class KeyType
 	D = 'D',
 	Q = 'Q',
 	E = 'E',
+	Z = 'Z',
+	X = 'X',
 
 	AnyKey = 0xFFFF,
 

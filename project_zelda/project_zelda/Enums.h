@@ -49,6 +49,7 @@ enum class AIAniState
 	NONE =0,
 	IDLE,
 	ATTACK,
+	ATTACK_2,
 	MOVE,
 	DIE,
 };

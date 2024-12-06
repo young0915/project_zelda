@@ -4,13 +4,17 @@
 #include "TimeManager.h"
 #include "InputManager.h"
 
-Hero::Hero(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos) : AI(aiName, info, aiType, attackType, pos)
+Hero::Hero(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float attackTime) : AI(aiName, info, aiType, attackType, pos, attackTime)
 {
 	_flipbookIdle[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleUp_" + _aiName);
 	_flipbookIdle[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleDown_" + _aiName);
 	_flipbookIdle[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleLeft_" + _aiName);
 	_flipbookIdle[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleRight_" + _aiName);
 
+	_flipbookAttackBow[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowUp_" + _aiName);
+	_flipbookAttackBow[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowDown_" + _aiName);
+	_flipbookAttackBow[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowLeft_" + _aiName);
+	_flipbookAttackBow[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowRight_" + _aiName);
 
 	SetLayer(LAYER_HERO);
 }
@@ -36,7 +40,7 @@ void Hero::Tick()
 		TickIdle();
 		break;
 	case AIAniState::ATTACK:
-		TickAttack();
+		TickAttack(AIAniState::ATTACK);
 		break;
 	case AIAniState::MOVE:
 		TickMove();
@@ -55,15 +59,20 @@ void Hero::TickIdle()
 	Super::TickIdle();
 	_keyPressed = true;
 
-	if (GET_SINGLE(InputManager)->GetButton(KeyType::W))
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::Up))
 		SetMove(DIR_UP);
-	else  if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
+	else  if (GET_SINGLE(InputManager)->GetButton(KeyType::Down))
 		SetMove(DIR_DOWN);
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::Left))
 		SetMove(DIR_LEFT);
-
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::Right))
 		SetMove(DIR_RIGHT);
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::Z))
+		TickAttack(AIAniState::ATTACK);
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::X))
+	{
+		SetState(AIAniState::ATTACK_2);
+	}
 	else
 	{
 		_keyPressed = false;
@@ -103,12 +112,22 @@ void Hero::TickMove()
 		}
 	}
 }
-
-void Hero::TickAttack()
-{
-	Super::TickAttack();
-
-}
+//
+//void Hero::TickAttack(AIAniState state)
+//{
+//	Super::TickAttack(state);
+//
+//	/*float deltatime = GET_SINGLE(TimeManager)->GetDeltaTime();
+//	_waitTime += deltatime;
+//
+//	SetState(AIAniState::ATTACK);
+//
+//	if (_waitTime >= _attackTime)
+//	{
+//		SetState(AIAniState::IDLE);
+//		_waitTime = 0;
+//	}*/
+//}
 
 void Hero::UpdateAnimation()
 {

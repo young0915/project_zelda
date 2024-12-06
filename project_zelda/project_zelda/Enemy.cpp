@@ -4,8 +4,8 @@
 #include "TimeManager.h"
 
 
-Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float movetime)
-	: AI(aiName, info, aiType, attackType, pos), _moveTime(movetime)
+Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float movetime , float attackTime)
+	: AI(aiName, info, aiType, attackType, pos, attackTime), _moveTime(movetime)
 {
 	SetLayer(LAYER_MONSTER);
 
@@ -94,7 +94,7 @@ void Enemy::Tick()
 	switch (_state)
 	{
 	case AIAniState::ATTACK:
-		TickAttack();
+		TickAttack(AIAniState::ATTACK);
 		break;
 	case AIAniState::MOVE:
 		TickMove();
@@ -172,14 +172,6 @@ float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	}
 
 }
-
-
-void Enemy::TickAttack()
-{
-	Super::TickAttack();
-
-}
-
 
 
 void Enemy::UpdateAnimation()
