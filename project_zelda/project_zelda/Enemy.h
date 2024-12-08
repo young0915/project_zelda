@@ -7,14 +7,16 @@ class Enemy : public AI
 public:
     Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float movetime, float attackTime);
     ~Enemy();
+
+public:
+	void UpdateTarget();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
-
 	virtual void TickMove() override;
-
 	virtual void UpdateAnimation() override;
+	
 public:
 	int _moveIndex = 0;
 

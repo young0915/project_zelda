@@ -16,6 +16,7 @@
 #include <string>
 #include <algorithm>
 #include <functional>
+#include <cmath>
 using namespace std;
 
 #include <assert.h>

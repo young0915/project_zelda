@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "Hero.h"
 
+
 Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float movetime, float attackTime)
 	: AI(aiName, info, aiType, attackType, pos, attackTime), _moveTime(movetime)
 {
@@ -82,6 +83,45 @@ Enemy::~Enemy()
 {
 }
 
+void Enemy::UpdateTarget()
+{
+	if (_target != nullptr) {
+		// 현재 타겟과의 거리 계산
+		Vec2Int dist = (_cellPos - _target->GetCellPos());
+
+		if (dist.Length() <= _aiInfo.attackDistance) {
+			// TODO: 공격 로직 (예: TickAttack(AIAniState::ATTACK))
+			TickAttack(AIAniState::ATTACK);
+			return;
+		}
+		_target = nullptr;
+	}
+	else
+	{
+		// 타겟이 없으면 새 타겟 지정
+		BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		if (scene == nullptr) {
+			return;
+		}
+
+		// 모든 영웅 확인
+		for (Actor* actor : scene->_actors[LAYER_HERO]) {
+			Hero* hero = dynamic_cast<Hero*>(actor);
+
+			if (hero != nullptr) {
+				Vec2Int dist = (_cellPos - hero->GetCellPos());
+				if (dist.Length() <= _aiInfo.attackDistance) {
+					_target = hero;
+					break;
+				}
+			}
+		}
+	}
+
+	
+
+}
+
 void Enemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -112,47 +152,7 @@ void Enemy::Render(HDC hdc)
 void Enemy::TickMove()
 {
 	Super::TickMove();
-
-	if (_target != nullptr)
-	{
-
-		// GetCellPos
-		Vec2Int dist = (_cellPos - _target->GetCellPos());
-		if (dist.Length() <= _aiInfo.attackDistance)
-		{
-			//TickAttack(AIAniState::ATTACK);
-			//TO-DO 에이스타
-			
-			return;
-		}
-
-	}
-	else
-	{
-		// 타겟을 지정해주자.?
-		// 나중에 영웅이 여러마리가 생길경우 어떻게 할것인가 생각해보기
-		BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-
-		if (scene == nullptr)
-			return;
-
-		if (scene->_actors[LAYER_HERO].size() >= 1)
-		{
-			for (Actor* hero : scene->_actors[LAYER_HERO])
-			{
-				Hero* heroTarget = dynamic_cast<Hero*>(hero);
-
-				if (heroTarget != nullptr)
-				{
-					Vec2Int dist = (_cellPos - heroTarget->GetCellPos());
-					// 본인과 영웅간의 거리
-					if (dist.Length() <= _aiInfo.attackDistance)
-						_target = heroTarget;
-				}
-			}
-		}
-
-	}
+	UpdateTarget();
 
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	Vec2Int nextPos = {  };
