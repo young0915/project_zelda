@@ -83,48 +83,141 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::UpdateTarget()
+void Enemy::UpdateTargetSearch()
 {
-	if (_target != nullptr) {
-		// 현재 타겟과의 거리 계산
-		Vec2Int dist = (_cellPos - _target->GetCellPos());
 
-		if (dist.Length() <= _aiInfo.attackDistance) {
-			// TODO: 공격 로직 (예: TickAttack(AIAniState::ATTACK))
-			TickAttack(AIAniState::ATTACK);
-			return;
-		}
-		_target = nullptr;
+	BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	if (scene == nullptr) {
+		return;
 	}
-	else
-	{
-		// 타겟이 없으면 새 타겟 지정
-		BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-		if (scene == nullptr) {
-			return;
-		}
 
-		// 모든 영웅 확인
-		for (Actor* actor : scene->_actors[LAYER_HERO]) {
-			Hero* hero = dynamic_cast<Hero*>(actor);
+	// 모든 영웅 확인
+	for (Actor* actor : scene->_actors[LAYER_HERO]) {
+		Hero* hero = dynamic_cast<Hero*>(actor);
 
-			if (hero != nullptr) {
-				Vec2Int dist = (_cellPos - hero->GetCellPos());
-				if (dist.Length() <= _aiInfo.attackDistance) {
-					_target = hero;
-					break;
-				}
+		if (hero != nullptr) {
+			Vec2Int dist = (_cellPos - hero->GetCellPos());
+			if (dist.Length() <= _aiInfo.attackDistance) {
+				_target = hero;
+				break;
 			}
 		}
 	}
-
-
-
 }
+
+void Enemy::CalculateTargetPath()
+{
+	Vec2Int start = _cellPos;
+	Vec2Int dest = _target->GetCellPos();
+
+	Vec2Int deltaXY[8] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	int32 cost[] = { 10,10,10,10 };
+
+	int32 size = 20;
+
+	vector<vector<int32>> best(size, vector<int32>(size, INT32_MAX));
+	vector<vector<bool>> closed(size, vector<bool>(size, false));
+	vector<vector<Vec2Int>> parent(size, vector<Vec2Int>(size, Vec2Int(0, 0)));
+
+	priority_queue<Node, vector<Node>, greater<Node>> pq;
+
+	// 초기값
+	{
+		int32 g = 0;
+		int32 h = 10 * (abs(dest.y - start.y) + abs(dest.x - start.x));
+
+		pq.push(Node(start, g + h, g));
+		best[start.y][start.x] = g + h;
+		parent[start.y][start.x] = start;
+	}
+
+	while (pq.empty() == false)
+	{
+		Node node = pq.top();
+		pq.pop();
+
+		if (closed[node.pos.y][node.pos.x] || best[node.pos.y][node.pos.x] < node.f)
+			continue;
+
+		closed[node.pos.y][node.pos.x] = true;
+
+		if (node.pos == dest)
+		{
+			_arrived = true;
+			break;
+		}
+
+		for (int32 dir = 0; dir < DIR_COUNT; dir++)
+		{
+			Vec2Int nextPos = node.pos + deltaXY[dir];
+			if (CanGo(nextPos) == false || closed[nextPos.y][nextPos.x])
+				continue;
+
+			int32 g = node.g + cost[dir];
+			int32 h = 10 * (abs(dest.y - nextPos.y) + abs(dest.x - nextPos.x));
+
+			if (best[nextPos.y][nextPos.x] <= g + h)
+				continue;
+
+			best[nextPos.y][nextPos.x] = g + h;
+			pq.push(Node(nextPos, g + h, g));
+			parent[nextPos.y][nextPos.x] = node.pos;
+		}
+	}
+
+	_path.clear();
+	Vec2Int pos = dest;
+
+	while (true)
+	{
+		_path.push_back(pos);
+
+		// 시작점
+		if (pos == parent[pos.y][pos.x])
+			break;
+
+		pos = parent[pos.y][pos.x];
+	}
+
+	std::reverse(_path.begin(), _path.end());
+}
+
+void Enemy::ChasingTarget()
+{
+	if (_pathIndex >= _path.size())
+	{
+		_path.clear();
+		_arrived = false;
+		_pathIndex = 0;
+		return;
+	}
+
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	_waitTime += deltaTime;
+
+	if (_waitTime >= 0.5f)
+	{
+		SetCellPos(_path[_pathIndex],  true);
+		Vec2Int directionVec = _path[_pathIndex] - _cellPos;
+
+		// 방향 설정
+		if (directionVec.x > 0)
+			SetDir(DIR_UP);
+		else if (directionVec.x < 0)
+			SetDir(DIR_LEFT);
+		else if (directionVec.y > 0)
+			SetDir(DIR_DOWN);
+		else if (directionVec.y < 0)
+			SetDir(DIR_UP);
+
+		_pathIndex++;
+		_waitTime = 0;
+	}
+}
+
 
 void Enemy::SetMove(Dir dir)
 {
-
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	Vec2Int nextPos = {  };
@@ -151,6 +244,14 @@ void Enemy::SetMove(Dir dir)
 
 	}
 
+	if (_waitTime >= _moveTime)
+	{
+		if (nextPos.x != 0 || nextPos.y != 0)
+		{
+			SetCellPos(nextPos);
+			_waitTime = 0;
+		}
+	}
 }
 
 void Enemy::BeginPlay()
@@ -170,7 +271,15 @@ void Enemy::Tick()
 		TickAttack(AIAniState::ATTACK);
 		break;
 	case AIAniState::MOVE:
-		TickMove();
+		if (_target == nullptr)
+		{
+			TickMove();
+		}
+		else if (_target != nullptr && !_arrived)
+			CalculateTargetPath();
+		else if(_target != nullptr && _arrived)
+			ChasingTarget();
+
 		break;
 	}
 }
@@ -183,7 +292,8 @@ void Enemy::Render(HDC hdc)
 void Enemy::TickMove()
 {
 	Super::TickMove();
-	UpdateTarget();
+
+	UpdateTargetSearch();
 
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	Vec2Int nextPos = {  };
@@ -221,14 +331,7 @@ void Enemy::TickMove()
 	}
 
 
-	if (_waitTime >= _moveTime)
-	{
-		if (nextPos.x != 0 || nextPos.y != 0)
-		{
-			SetCellPos(nextPos, true);
-			_waitTime = 0;
-		}
-	}
+
 
 }
 

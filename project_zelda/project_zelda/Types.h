@@ -60,6 +60,11 @@ struct Vector
 		y *= ratio;
 	}
 
+	bool operator==(const Vector& other)
+	{
+		return y == other.y && x == other.x;
+	}
+
 	float LengthSquared()
 	{
 		return x * x + y * y;
@@ -124,6 +129,11 @@ struct VectorInt
 		return ret;
 	}
 
+	bool operator==(const VectorInt& other)
+	{
+		return y == other.y && x == other.x;
+	}
+
 	void operator+=(const VectorInt& other)
 	{
 		x += other.x;
@@ -170,4 +180,18 @@ struct AIStatus
 	int32 dmg = 0;
 	float speed = 0;
 	int32 attackDistance = 0;
+};
+
+struct Node
+{
+	Vec2Int pos;
+	int32 g;
+	int32 h;
+	int32 f;
+
+	bool operator<(const Node& other) const { return f < other.f; }
+	bool operator>(const Node& other) const { return f > other.f; }
+
+	Node(Vec2Int pos, int32 f, int32 g) : pos(pos), f(f), g(g){}
+
 };

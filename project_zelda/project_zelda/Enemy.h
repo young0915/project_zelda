@@ -9,7 +9,9 @@ public:
     ~Enemy();
 
 public:
-	void UpdateTarget();
+	void UpdateTargetSearch();
+	void CalculateTargetPath();
+	void ChasingTarget();
 
 protected:
 	virtual void BeginPlay() override;
@@ -25,11 +27,13 @@ public:
 private :
 	float _moveTime = 0.0f;
 
-	// TO-DO 공격타임 추가하기
 	float _attackTime = 0.0f;
 	float _waitTime = 0.0f;
-
+	bool _arrived = false;
 	vector<Vec2Int> _patrolRoute;
+	vector<Vec2Int> _path;
+
+	int32 _pathIndex = 0;
 
 };
 
