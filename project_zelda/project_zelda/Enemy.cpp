@@ -83,24 +83,28 @@ Enemy::~Enemy() {}
 
 void Enemy::UpdateTargetSearch()
 {
-
 	BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 	if (scene == nullptr) {
 		return;
 	}
 
-	// 모든 영웅 확인
-	for (Actor* actor : scene->_actors[LAYER_HERO]) {
-		Hero* hero = dynamic_cast<Hero*>(actor);
+	if (scene->_actors[LAYER_HERO].size() > 0)
+	{
+		// 모든 영웅 확인
+		for (Actor* actor : scene->_actors[LAYER_HERO]) {
+			Hero* hero = dynamic_cast<Hero*>(actor);
 
-		if (hero != nullptr) {
-			Vec2Int dist = (_cellPos - hero->GetCellPos());
-			if (dist.Length() <= _aiInfo.attackDistance) {
-				_target = hero;
-				break;
+			if (hero != nullptr) {
+				Vec2Int dist = (_cellPos - hero->GetCellPos());
+				if (dist.Length() <= _aiInfo.attackDistance) {
+					_target = hero;
+					break;
+				}
 			}
 		}
+
 	}
+
 }
 
 void Enemy::CalculateTargetPath()
@@ -182,7 +186,7 @@ void Enemy::CalculateTargetPath()
 
 void Enemy::ChasingTarget()
 {
-	if (GetArroundHero())
+	if (GetArroundTarget())
 	{
 		SetCellPos(_path[(_path.size() - 1)], true);
 		SetState(AIAniState::ATTACK);
@@ -199,7 +203,7 @@ void Enemy::ChasingTarget()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_waitTime += deltaTime;
 	Vec2Int nextDir = _path[_pathIndex] - _cellPos;
-	
+
 	Vec2Int nextPos = _cellPos + nextDir;
 
 	if (!CanGo(nextPos))
@@ -226,7 +230,7 @@ void Enemy::ChasingTarget()
 		ApplyMovement(DIR_UP);
 	}
 
-	if (_waitTime >= (_moveTime/2))
+	if (_waitTime >= (_moveTime / 2))
 	{
 		SetCellPos(nextPos, true);
 		_pathIndex++;
@@ -241,22 +245,7 @@ void Enemy::ResetTarget()
 	_pathIndex = 0;
 }
 
-bool Enemy::GetArroundHero()
-{
-	if (_target == nullptr)
-		return false;
 
-	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-
-	for (int32 dir = 0; dir < DIR_COUNT; dir++)
-	{
-		Vec2Int nextPos = _cellPos + deltaXY[dir];
-		if (_target->GetCellPos() == nextPos)
-			return true;
-	}
-
-	return false;
-}
 
 
 void Enemy::HandleMovement(Dir dir)
@@ -336,6 +325,21 @@ void Enemy::Tick()
 void Enemy::Render(HDC hdc)
 {
 	Super::Render(hdc);
+}
+
+void Enemy::TickAttack(AIAniState state)
+{
+	Super::TickAttack(state);
+
+	if (_attackType == AttackType::MELEE_ATTACK)
+	{
+		if (GetArroundTarget())
+		{
+			//To-DO 
+			int a = 3;
+		}
+	}
+
 }
 
 void Enemy::TickMove()

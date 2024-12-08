@@ -14,12 +14,14 @@ public:
 	void ChasingTarget();
 	void ResetTarget();
 
-	bool GetArroundHero();
+
+
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
+	virtual void TickAttack(AIAniState state) override;
 	virtual void TickMove() override;
 	virtual void UpdateAnimation() override;
 	virtual void HandleMovement(Dir dir) override;

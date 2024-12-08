@@ -18,15 +18,12 @@ protected:
 	virtual void TickIdle();
 	virtual void TickMove();
 	virtual void TickAttack(AIAniState state);
-
 	virtual void SetState(AIAniState state);
-
 	virtual void UpdateAnimation();
-
 	virtual	void HandleMovement(Dir dir);
 
 	void SetDir(Dir dir);
-
+	bool GetArroundTarget();
 	bool HasReachedDest();
 	bool CanGo(Vec2Int cellPos);
 	void SetCellPos(Vec2Int cellPos, bool teleport = false);

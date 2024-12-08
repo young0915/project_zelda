@@ -55,6 +55,7 @@ void AI::TickAttack(AIAniState state)
 
 	SetState(state);
 
+
 	if (_waitAttackTime >= _attackTime)
 	{
 		SetState(AIAniState::MOVE);
@@ -75,6 +76,23 @@ void AI::SetState(AIAniState state)
 void AI::UpdateAnimation() {}
 
 void AI::HandleMovement(Dir dir) {}
+
+bool AI::GetArroundTarget()
+{
+	if (_target == nullptr)
+		return false;
+
+	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
+	for (int32 dir = 0; dir < DIR_COUNT; dir++)
+	{
+		Vec2Int nextPos = _cellPos + deltaXY[dir];
+		if (_target->GetCellPos() == nextPos)
+			return true;
+	}
+
+	return false;
+}
 
 void AI::SetDir(Dir dir)
 {
