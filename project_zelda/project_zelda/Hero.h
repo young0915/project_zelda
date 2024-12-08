@@ -26,8 +26,6 @@ public:
 
 	Flipbook* _flipbookIdle[4] = {};
 	Flipbook* _flipbookAttackBow[4] = {};
-	//float _waitTime = 0.0f;
-	//float _attackTime = 0.0f;
 	bool _keyPressed = false;
 };
 

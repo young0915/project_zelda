@@ -465,6 +465,7 @@ void BattleScene::SpawnEnemy(int stage)
 			zolInfo.maxHp = 10;
 			zolInfo.dmg = 5;
 			zolInfo.speed = 15.0f;
+			zolInfo.attackDistance = 2.0f;
 			Enemy* zol = new Enemy(L"Zol", zolInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.5f, 0.5f);
 			AddActor(zol);
 		}
@@ -477,6 +478,7 @@ void BattleScene::SpawnEnemy(int stage)
 			batInfo.maxHp = 10;
 			batInfo.dmg = 5;
 			batInfo.speed = 18.0f;
+			batInfo.attackDistance = 3.0f;
 			Enemy* bat = new Enemy(L"Bat", batInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.9f, 0.5f);
 			AddActor(bat);
 		}
@@ -491,6 +493,7 @@ void BattleScene::SpawnEnemy(int stage)
 			octorokInfo.maxHp = 10;
 			octorokInfo.dmg = 5;
 			octorokInfo.speed = 17.0f;
+			octorokInfo.attackDistance = 1.0f;
 			Enemy* octorok = new Enemy(L"Octoroc", octorokInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.2f, 0.5f);
 			AddActor(octorok);
 		}
@@ -505,6 +508,7 @@ void BattleScene::SpawnEnemy(int stage)
 			bow_moblinInfo.maxHp = 10;
 			bow_moblinInfo.dmg = 5;
 			bow_moblinInfo.speed = 13.0f;
+			bow_moblinInfo.attackDistance = 3.0f;
 			Enemy* bow_moblin = new Enemy(L"Moblin_A", bow_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.5f, 0.5f);
 			AddActor(bow_moblin);
 		}
@@ -517,6 +521,7 @@ void BattleScene::SpawnEnemy(int stage)
 			spear_moblinInfo.maxHp = 10;
 			spear_moblinInfo.dmg = 5;
 			spear_moblinInfo.speed = 14.0f;
+			spear_moblinInfo.attackDistance = 1.0f;
 			Enemy* spear_moblin = new Enemy(L"Moblin_S", spear_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.8f, 0.5f);
 			AddActor(spear_moblin);
 		}
@@ -531,6 +536,7 @@ void BattleScene::SpawnEnemy(int stage)
 			darknutInfo.maxHp = 10;
 			darknutInfo.dmg = 5;
 			darknutInfo.speed = 19.0f;
+			darknutInfo.attackDistance = 1.0f;
 			Enemy* darknut = new Enemy(L"Darknut", darknutInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.6f, 0.5f);
 			AddActor(darknut);
 		}

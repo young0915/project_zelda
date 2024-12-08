@@ -1,8 +1,9 @@
 #pragma once
 #include "FlipbookActor.h"
 class Flipbook;
-class AI :
-    public FlipbookActor
+class AI;
+
+class AI : public FlipbookActor
 {
     using Super = FlipbookActor;
 public:
@@ -28,6 +29,8 @@ protected:
 	bool CanGo(Vec2Int cellPos);
 	void SetCellPos(Vec2Int cellPos, bool teleport = false);
 
+public:
+	Vec2Int GetCellPos() { return _cellPos; }
 
 protected:
 	Vec2Int _cellPos = {};
@@ -39,6 +42,8 @@ protected:
 
 
 public:
+	// °ø°ÝÇÒ Å¸°Ù.
+	AI* _target = nullptr;
 
 	AIAniState _state = AIAniState::NONE;
 	AITYPE _aiType = AITYPE::NONE;
