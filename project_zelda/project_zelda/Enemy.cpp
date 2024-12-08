@@ -333,10 +333,9 @@ void Enemy::TickAttack(AIAniState state)
 
 	if (_attackType == AttackType::MELEE_ATTACK)
 	{
-		if (GetArroundTarget())
+		if (GetArroundTarget() && _target != nullptr)
 		{
-			//To-DO 
-			int a = 3;
+			_target -= _aiInfo.dmg;
 		}
 	}
 
