@@ -336,6 +336,7 @@ void Enemy::TickAttack(AIAniState state)
 		if (GetArroundTarget() && _target != nullptr)
 		{
 			_target -= _aiInfo.dmg;
+			return;
 		}
 	}
 

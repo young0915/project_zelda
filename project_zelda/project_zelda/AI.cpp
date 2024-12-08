@@ -55,6 +55,14 @@ void AI::TickAttack(AIAniState state)
 
 	SetState(state);
 
+	if (_attackType == AttackType::MELEE_ATTACK)
+	{
+		if (GetArroundTarget() && _target != nullptr)
+		{
+			_target -= _aiInfo.dmg;
+		}
+	}
+
 
 	if (_waitAttackTime >= _attackTime)
 	{
