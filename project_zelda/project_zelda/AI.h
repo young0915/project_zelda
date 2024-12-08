@@ -23,7 +23,7 @@ protected:
 
 	virtual void UpdateAnimation();
 
-	virtual	void SetMove(Dir dir);
+	virtual	void HandleMovement(Dir dir);
 
 	void SetDir(Dir dir);
 

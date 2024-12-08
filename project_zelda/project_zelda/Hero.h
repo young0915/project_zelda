@@ -19,7 +19,7 @@ protected:
 	virtual void TickMove() override;
 
 	virtual void UpdateAnimation() override;
-	virtual void SetMove(Dir dir) override;
+	virtual void HandleMovement(Dir dir) override;
 public:
 public:
 

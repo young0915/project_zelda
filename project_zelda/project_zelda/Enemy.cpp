@@ -79,9 +79,7 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 
 }
 
-Enemy::~Enemy()
-{
-}
+Enemy::~Enemy() {}
 
 void Enemy::UpdateTargetSearch()
 {
@@ -194,29 +192,44 @@ void Enemy::ChasingTarget()
 
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_waitTime += deltaTime;
+	Vec2Int nextDir = _path[_pathIndex] - _cellPos;
+	
+	Vec2Int nextPos = _cellPos + nextDir;
 
-	if (_waitTime >= 0.5f)
+	if (!CanGo(nextPos))
+		return;
+
+	if (nextDir.x > 0)
 	{
-		SetCellPos(_path[_pathIndex],  true);
-		Vec2Int directionVec = _path[_pathIndex] - _cellPos;
+		SetDir(DIR_RIGHT);
+		ApplyMovement(DIR_RIGHT);
+	}
+	else if (nextDir.x < 0)
+	{
+		SetDir(DIR_LEFT);
+		ApplyMovement(DIR_LEFT);
+	}
+	else if (nextDir.y > 0)
+	{
+		SetDir(DIR_DOWN);
+		ApplyMovement(DIR_DOWN);
+	}
+	else if (nextDir.y < 0)
+	{
+		SetDir(DIR_UP);
+		ApplyMovement(DIR_UP);
+	}
 
-		// 방향 설정
-		if (directionVec.x > 0)
-			SetDir(DIR_UP);
-		else if (directionVec.x < 0)
-			SetDir(DIR_LEFT);
-		else if (directionVec.y > 0)
-			SetDir(DIR_DOWN);
-		else if (directionVec.y < 0)
-			SetDir(DIR_UP);
-
+	if (_waitTime >= (_moveTime/2))
+	{
+		SetCellPos(nextPos, true);
 		_pathIndex++;
 		_waitTime = 0;
 	}
 }
 
 
-void Enemy::SetMove(Dir dir)
+void Enemy::HandleMovement(Dir dir)
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
@@ -226,6 +239,25 @@ void Enemy::SetMove(Dir dir)
 	nextPos = _cellPos + deltaXY[dir];
 	if (!CanGo(nextPos))
 		return;
+
+	ApplyMovement(dir);
+
+	if (_waitTime >= _moveTime)
+	{
+		if (nextPos.x != 0 || nextPos.y != 0)
+		{
+			SetCellPos(nextPos);
+			_waitTime = 0;
+		}
+	}
+}
+
+void Enemy::ApplyMovement(Dir dir)
+{
+	if (dir == DIR_COUNT)
+		return;
+
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	switch (dir)
 	{
@@ -241,16 +273,6 @@ void Enemy::SetMove(Dir dir)
 	case DIR_RIGHT:
 		_pos.x += _aiInfo.speed * deltaTime;
 		break;
-
-	}
-
-	if (_waitTime >= _moveTime)
-	{
-		if (nextPos.x != 0 || nextPos.y != 0)
-		{
-			SetCellPos(nextPos);
-			_waitTime = 0;
-		}
 	}
 }
 
@@ -272,14 +294,11 @@ void Enemy::Tick()
 		break;
 	case AIAniState::MOVE:
 		if (_target == nullptr)
-		{
 			TickMove();
-		}
 		else if (_target != nullptr && !_arrived)
 			CalculateTargetPath();
-		else if(_target != nullptr && _arrived)
+		else if (_target != nullptr && _arrived)
 			ChasingTarget();
-
 		break;
 	}
 }
@@ -315,24 +334,20 @@ void Enemy::TickMove()
 		_cellPos.y != _patrolRoute[_moveIndex].y)
 	{
 		if (_cellPos.y > _patrolRoute[_moveIndex].y)
-			SetMove(DIR_UP);
+			HandleMovement(DIR_UP);
 
 		else if (_cellPos.y < _patrolRoute[_moveIndex].y)
-			SetMove(DIR_DOWN);
+			HandleMovement(DIR_DOWN);
 	}
 	else if (_cellPos.x != _patrolRoute[_moveIndex].x &&
 		_cellPos.y == _patrolRoute[_moveIndex].y)
 	{
 
 		if (_cellPos.x > _patrolRoute[_moveIndex].x)
-			SetMove(DIR_LEFT);
+			HandleMovement(DIR_LEFT);
 		else if (_cellPos.x < _patrolRoute[_moveIndex].x)
-			SetMove(DIR_RIGHT);
+			HandleMovement(DIR_RIGHT);
 	}
-
-
-
-
 }
 
 

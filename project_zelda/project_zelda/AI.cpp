@@ -74,7 +74,7 @@ void AI::SetState(AIAniState state)
 
 void AI::UpdateAnimation() {}
 
-void AI::SetMove(Dir dir) {}
+void AI::HandleMovement(Dir dir) {}
 
 void AI::SetDir(Dir dir)
 {
@@ -105,7 +105,7 @@ void AI::SetCellPos(Vec2Int cellPos, bool teleport)
 	if (scene == nullptr)
 		return;
 
-	_destPos = scene->ConvertPos(cellPos);
+	_destPos = scene->ConvertPos(_cellPos);
 
 	if (teleport)
 		_pos = _destPos;

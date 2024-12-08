@@ -19,8 +19,9 @@ protected:
 	virtual void Render(HDC hdc) override;
 	virtual void TickMove() override;
 	virtual void UpdateAnimation() override;
-	virtual void SetMove(Dir dir) override;
-	
+	virtual void HandleMovement(Dir dir) override;
+	virtual void ApplyMovement(Dir dir);
+
 public:
 	int _moveIndex = 0;
 
@@ -33,7 +34,7 @@ private :
 	vector<Vec2Int> _patrolRoute;
 	vector<Vec2Int> _path;
 
-	int32 _pathIndex = 0;
+	int32 _pathIndex = 1;
 
 };
 

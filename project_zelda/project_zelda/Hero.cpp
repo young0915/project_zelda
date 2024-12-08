@@ -63,13 +63,13 @@ void Hero::TickIdle()
 	_keyPressed = true;
 
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::Up))
-		SetMove(DIR_UP);
+		HandleMovement(DIR_UP);
 	else  if (GET_SINGLE(InputManager)->GetButton(KeyType::Down))
-		SetMove(DIR_DOWN);
+		HandleMovement(DIR_DOWN);
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::Left))
-		SetMove(DIR_LEFT);
+		HandleMovement(DIR_LEFT);
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::Right))
-		SetMove(DIR_RIGHT);
+		HandleMovement(DIR_RIGHT);
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::Z))
 		TickAttack(AIAniState::ATTACK);
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::X))
@@ -137,7 +137,7 @@ void Hero::UpdateAnimation()
 
 }
 
-void Hero::SetMove(Dir dir)
+void Hero::HandleMovement(Dir dir)
 {
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
