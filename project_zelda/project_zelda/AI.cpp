@@ -62,6 +62,7 @@ void AI::TickAttack(AIAniState state)
 	}
 }
 
+
 void AI::SetState(AIAniState state)
 {
 	if (_state == state)
@@ -72,6 +73,8 @@ void AI::SetState(AIAniState state)
 }
 
 void AI::UpdateAnimation() {}
+
+void AI::SetMove(Dir dir) {}
 
 void AI::SetDir(Dir dir)
 {

@@ -10,12 +10,14 @@ public:
 
 public:
 	void UpdateTarget();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 	virtual void TickMove() override;
 	virtual void UpdateAnimation() override;
+	virtual void SetMove(Dir dir) override;
 	
 public:
 	int _moveIndex = 0;

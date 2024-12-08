@@ -109,11 +109,41 @@ void BattleScene::LoadResource(int stage)
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Bat");
 		fb->SetInfo({ texture, L"FB_MoveDown_Bat", {50, 50}, 0, 3, 0, 0.5f });
 	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Bat");
+		fb->SetInfo({ texture, L"FB_MoveLeft_Bat", {50, 50}, 0, 3, 0, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Bat");
+		fb->SetInfo({ texture, L"FB_MoveRight_Bat", {50, 50}, 0, 3, 0, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Bat");
+		fb->SetInfo({ texture, L"FB_MoveUp_Bat", {50, 50}, 0, 3, 0, 0.5f });
+	}
 
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Bat");
 		fb->SetInfo({ texture, L"FB_MoveDown_Bat", {50, 50}, 0, 3, 0, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Bat");
+		fb->SetInfo({ texture, L"FB_MoveLeft_Bat", {50, 50}, 0, 3, 0, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Bat");
+		fb->SetInfo({ texture, L"FB_MoveRight_Bat", {50, 50}, 0, 3, 0, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Bat");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Bat");
+		fb->SetInfo({ texture, L"FB_MoveUp_Bat", {50, 50}, 0, 3, 0, 0.5f });
 	}
 
 #pragma endregion
@@ -125,12 +155,42 @@ void BattleScene::LoadResource(int stage)
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown_Zol");
 		fb->SetInfo({ texture, L"FB_MoveDown_Zol", {50, 50}, 0, 2, 0, 0.5f });
 	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Zol");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft_Zol");
+		fb->SetInfo({ texture, L"FB_MoveLeft_Zol", {50, 50}, 0, 2, 0, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Zol");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight_Zol");
+		fb->SetInfo({ texture, L"FB_MoveRight_Zol", {50, 50}, 0, 2, 0, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Zol");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp_Zol");
+		fb->SetInfo({ texture, L"FB_MoveUp_Zol", {50, 50}, 0, 2, 0, 0.5f });
+	}
 
-	// Move
+	// Attack
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Zol");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown_Zol");
 		fb->SetInfo({ texture, L"FB_MoveDown_Zol", {50, 50}, 0, 3, 1, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Zol");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft_Zol");
+		fb->SetInfo({ texture, L"FB_MoveLeft_Zol", {50, 50}, 0, 3, 1, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Zol");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight_Zol");
+		fb->SetInfo({ texture, L"FB_MoveRight_Zol", {50, 50}, 0, 3, 1, 0.5f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Zol");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Zol");
+		fb->SetInfo({ texture, L"FB_MoveUp_Zol", {50, 50}, 0, 3, 1, 0.5f });
 	}
 #pragma endregion
 		break;

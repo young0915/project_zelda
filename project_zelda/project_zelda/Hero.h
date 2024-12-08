@@ -19,9 +19,8 @@ protected:
 	virtual void TickMove() override;
 
 	virtual void UpdateAnimation() override;
-
+	virtual void SetMove(Dir dir) override;
 public:
-	void SetMove(Dir dir);
 public:
 
 	Flipbook* _flipbookIdle[4] = {};

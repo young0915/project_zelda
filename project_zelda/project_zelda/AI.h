@@ -23,6 +23,8 @@ protected:
 
 	virtual void UpdateAnimation();
 
+	virtual	void SetMove(Dir dir);
+
 	void SetDir(Dir dir);
 
 	bool HasReachedDest();

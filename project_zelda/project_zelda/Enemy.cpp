@@ -118,7 +118,38 @@ void Enemy::UpdateTarget()
 		}
 	}
 
-	
+
+
+}
+
+void Enemy::SetMove(Dir dir)
+{
+
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	Vec2Int nextPos = {  };
+
+	SetDir(dir);
+	nextPos = _cellPos + deltaXY[dir];
+	if (!CanGo(nextPos))
+		return;
+
+	switch (dir)
+	{
+	case DIR_UP:
+		_pos.y -= _aiInfo.speed * deltaTime;
+		break;
+	case DIR_DOWN:
+		_pos.y += _aiInfo.speed * deltaTime;
+		break;
+	case DIR_LEFT:
+		_pos.x -= _aiInfo.speed * deltaTime;
+		break;
+	case DIR_RIGHT:
+		_pos.x += _aiInfo.speed * deltaTime;
+		break;
+
+	}
 
 }
 
@@ -174,35 +205,19 @@ void Enemy::TickMove()
 		_cellPos.y != _patrolRoute[_moveIndex].y)
 	{
 		if (_cellPos.y > _patrolRoute[_moveIndex].y)
-		{
-			nextPos = _cellPos + deltaXY[DIR_UP];
-			if (CanGo(nextPos))
-				_pos.y -= _aiInfo.speed * deltaTime;
-		}
-		else if (_cellPos.y < _patrolRoute[_moveIndex].y)
-		{
-			nextPos = _cellPos + deltaXY[DIR_DOWN];
-			if (CanGo(nextPos))
-				_pos.y += _aiInfo.speed * deltaTime;
+			SetMove(DIR_UP);
 
-		}
+		else if (_cellPos.y < _patrolRoute[_moveIndex].y)
+			SetMove(DIR_DOWN);
 	}
 	else if (_cellPos.x != _patrolRoute[_moveIndex].x &&
 		_cellPos.y == _patrolRoute[_moveIndex].y)
 	{
 
 		if (_cellPos.x > _patrolRoute[_moveIndex].x)
-		{
-			nextPos = _cellPos + deltaXY[DIR_LEFT];
-			if (CanGo(nextPos))
-				_pos.x -= _aiInfo.speed * deltaTime;
-		}
+			SetMove(DIR_LEFT);
 		else if (_cellPos.x < _patrolRoute[_moveIndex].x)
-		{
-			nextPos = _cellPos + deltaXY[DIR_RIGHT];
-			if (CanGo(nextPos))
-				_pos.x += _aiInfo.speed * deltaTime;
-		}
+			SetMove(DIR_RIGHT);
 	}
 
 
