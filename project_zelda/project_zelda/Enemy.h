@@ -12,6 +12,9 @@ public:
 	void UpdateTargetSearch();
 	void CalculateTargetPath();
 	void ChasingTarget();
+	void ResetTarget();
+
+	bool GetArroundHero();
 
 protected:
 	virtual void BeginPlay() override;

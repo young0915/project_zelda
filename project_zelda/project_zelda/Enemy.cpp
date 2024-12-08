@@ -182,11 +182,17 @@ void Enemy::CalculateTargetPath()
 
 void Enemy::ChasingTarget()
 {
+	if (GetArroundHero())
+	{
+		SetCellPos(_path[(_path.size() - 1)], true);
+		SetState(AIAniState::ATTACK);
+		ResetTarget();
+		return;
+	}
+
 	if (_pathIndex >= _path.size())
 	{
-		_path.clear();
-		_arrived = false;
-		_pathIndex = 0;
+		ResetTarget();
 		return;
 	}
 
@@ -226,6 +232,30 @@ void Enemy::ChasingTarget()
 		_pathIndex++;
 		_waitTime = 0;
 	}
+}
+
+void Enemy::ResetTarget()
+{
+	_path.clear();
+	_arrived = false;
+	_pathIndex = 0;
+}
+
+bool Enemy::GetArroundHero()
+{
+	if (_target == nullptr)
+		return false;
+
+	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
+	for (int32 dir = 0; dir < DIR_COUNT; dir++)
+	{
+		Vec2Int nextPos = _cellPos + deltaXY[dir];
+		if (_target->GetCellPos() == nextPos)
+			return true;
+	}
+
+	return false;
 }
 
 

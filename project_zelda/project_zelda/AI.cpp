@@ -57,7 +57,7 @@ void AI::TickAttack(AIAniState state)
 
 	if (_waitAttackTime >= _attackTime)
 	{
-		SetState(AIAniState::IDLE);
+		SetState(AIAniState::MOVE);
 		_waitAttackTime = 0;
 	}
 }
