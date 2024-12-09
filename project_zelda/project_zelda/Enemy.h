@@ -13,7 +13,9 @@ public:
 	void CalculateTargetPath();
 	void ChasingTarget();
 	void ResetTarget();
-	void MoveTowards();
+	void MoveTowards(Dir dir);
+	Dir GetDirection(Vec2Int nextPos);
+	float MoveToTarget(float current, float target, float maxDelta);
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,7 +25,6 @@ protected:
 	virtual void TickMove() override;
 	virtual void UpdateAnimation() override;
 	virtual void HandleMovement(Dir dir) override;
-	virtual void ApplyMovement(Dir dir);
 
 public:
 	int _moveIndex = 0;

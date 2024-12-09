@@ -524,13 +524,13 @@ void BattleScene::SpawnEnemy(int stage)
 			AIStatus zolInfo;
 			zolInfo.maxHp = 10;
 			zolInfo.dmg = 5;
-			zolInfo.speed = 15.0f;
+			zolInfo.speed = 60.0f;
 			zolInfo.attackDistance = 2.0f;
-			Enemy* zol = new Enemy(L"Zol", zolInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.5f, 0.5f);
+			Enemy* zol = new Enemy(L"Zol", zolInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.5f, 0.5f);
 			AddActor(zol);
 		}
 
-		for (int i = 0; i < 2; i++)
+		/*for (int i = 0; i < 2; i++)
 		{
 			Vec2Int pos = { 5 + (i != 0) * 6, 6 };
 
@@ -541,7 +541,7 @@ void BattleScene::SpawnEnemy(int stage)
 			batInfo.attackDistance = 3.0f;
 			Enemy* bat = new Enemy(L"Bat", batInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.9f, 0.5f);
 			AddActor(bat);
-		}
+		}*/
 		break;
 
 	case 2:

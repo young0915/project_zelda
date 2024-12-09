@@ -186,13 +186,13 @@ void Enemy::CalculateTargetPath()
 
 void Enemy::ChasingTarget()
 {
-	if (GetArroundTarget())
-	{
-		SetCellPos(_path[(_path.size() - 1)], true);
-		SetState(AIAniState::ATTACK);
-		ResetTarget();
-		return;
-	}
+	//if (GetArroundTarget())
+	//{
+	//	//SetCellPos(_path[(_path.size() - 1)]);
+	//	//SetState(AIAniState::ATTACK);
+	//	ResetTarget();
+	//	return;
+	//}
 
 	if (_pathIndex >= _path.size())
 	{
@@ -209,33 +209,15 @@ void Enemy::ChasingTarget()
 	if (!CanGo(nextPos))
 		return;
 
-	if (nextDir.x > 0)
-	{
-		SetDir(DIR_RIGHT);
-		ApplyMovement(DIR_RIGHT);
-	}
-	else if (nextDir.x < 0)
-	{
-		SetDir(DIR_LEFT);
-		ApplyMovement(DIR_LEFT);
-	}
-	else if (nextDir.y > 0)
-	{
-		SetDir(DIR_DOWN);
-		ApplyMovement(DIR_DOWN);
-	}
-	else if (nextDir.y < 0)
-	{
-		SetDir(DIR_UP);
-		ApplyMovement(DIR_UP);
-	}
+	Dir dir = GetDirection(nextDir);
 
-	if (_waitTime >= (_moveTime / 2))
+	if (nextPos.x != _cellPos.x || nextPos.y != _cellPos.y)
 	{
-		SetCellPos(nextPos, true);
-		_pathIndex++;
-		_waitTime = 0;
+		SetDir(dir);
+		MoveTowards(dir);
 	}
+	else
+		_pathIndex++;
 }
 
 void Enemy::ResetTarget()
@@ -245,13 +227,8 @@ void Enemy::ResetTarget()
 	_pathIndex = 0;
 }
 
-
-
-
-
 void Enemy::HandleMovement(Dir dir)
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	Vec2Int nextPos = {  };
 
@@ -260,40 +237,13 @@ void Enemy::HandleMovement(Dir dir)
 	if (!CanGo(nextPos))
 		return;
 
-	ApplyMovement(dir);
+	MoveTowards(dir);
 
-	if (_waitTime >= _moveTime)
-	{
-		if (nextPos.x != 0 || nextPos.y != 0)
-		{
-			SetCellPos(nextPos);
-			_waitTime = 0;
-		}
-	}
-}
-
-void Enemy::ApplyMovement(Dir dir)
-{
-	if (dir == DIR_COUNT)
-		return;
-
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
-	switch (dir)
-	{
-	case DIR_UP:
-		_pos.y -= _aiInfo.speed * deltaTime;
-		break;
-	case DIR_DOWN:
-		_pos.y += _aiInfo.speed * deltaTime;
-		break;
-	case DIR_LEFT:
-		_pos.x -= _aiInfo.speed * deltaTime;
-		break;
-	case DIR_RIGHT:
-		_pos.x += _aiInfo.speed * deltaTime;
-		break;
-	}
+	//if (_waitTime >= _moveTime)
+	//{
+	//	SetCellPos(nextPos);
+	//	_waitTime = 0;
+	//}
 }
 
 void Enemy::BeginPlay()
@@ -346,14 +296,12 @@ void Enemy::TickAttack(AIAniState state)
 void Enemy::TickMove()
 {
 	Super::TickMove();
-
 	UpdateTargetSearch();
 
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	Vec2Int nextPos = {  };
 
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
 	_waitTime += deltaTime;
 
 	if (_cellPos.x == _patrolRoute[_moveIndex].x && _cellPos.y == _patrolRoute[_moveIndex].y)
@@ -363,7 +311,6 @@ void Enemy::TickMove()
 		else
 			_moveIndex = 0;
 	}
-
 
 	if (_cellPos.x == _patrolRoute[_moveIndex].x &&
 		_cellPos.y != _patrolRoute[_moveIndex].y)
@@ -400,6 +347,54 @@ void Enemy::UpdateAnimation()
 	}
 }
 
-void Enemy::MoveTowards()
+void Enemy::MoveTowards(Dir dir)
 {
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	_waitTime += deltaTime;
+
+	BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	if (scene == nullptr)
+		return;
+
+	// 방향에 따른 이동량 계산
+	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	Vec2Int nextPos = _cellPos + deltaXY[dir];
+
+	// 목표 위치 설정
+	_destPos = scene->ConvertPos(nextPos);
+
+	// 이동 속도 설정
+	const float speed = _aiInfo.speed * deltaTime;
+
+	// x 축 이동
+	_pos.x = MoveToTarget(static_cast<float>(_pos.x), static_cast<float>(_destPos.x), speed);
+
+	// y 축 이동
+	_pos.y = MoveToTarget(static_cast<float>(_pos.y), static_cast<float>(_destPos.y), speed);
+
+	if (_waitTime >= _moveTime)
+	{
+		SetCellPos(nextPos, true);
+		_waitTime = 0;
+	}
+}
+
+Dir Enemy::GetDirection(Vec2Int nextPos)
+{
+	if (nextPos.x > 0)
+		return DIR_RIGHT;
+	else if (nextPos.x < 0)
+		return DIR_LEFT;
+	else if (nextPos.y > 0)
+		return DIR_DOWN;
+	else if (nextPos.y < 0)
+		return DIR_UP;
+}
+
+float Enemy::MoveToTarget(float current, float target, float maxDelta)
+{
+	if (fabs(current - target) <= maxDelta)
+		return target; // 목표 위치에 도달
+
+	return current + (target > current ? maxDelta : -maxDelta); // 현재 위치를 목표로 이동
 }
