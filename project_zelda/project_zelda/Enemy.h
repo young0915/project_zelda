@@ -13,9 +13,7 @@ public:
 	void CalculateTargetPath();
 	void ChasingTarget();
 	void ResetTarget();
-
-
-
+	void MoveTowards();
 
 protected:
 	virtual void BeginPlay() override;

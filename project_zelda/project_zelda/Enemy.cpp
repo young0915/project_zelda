@@ -248,6 +248,7 @@ void Enemy::ResetTarget()
 
 
 
+
 void Enemy::HandleMovement(Dir dir)
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
@@ -331,14 +332,14 @@ void Enemy::TickAttack(AIAniState state)
 {
 	Super::TickAttack(state);
 
-	if (_attackType == AttackType::MELEE_ATTACK)
-	{
-		if (GetArroundTarget() && _target != nullptr)
-		{
-			_target -= _aiInfo.dmg;
-			return;
-		}
-	}
+	//if (_attackType == AttackType::MELEE_ATTACK)
+	//{
+	//	if (GetArroundTarget() && _target != nullptr)
+	//	{
+	//		_target -= _aiInfo.dmg;
+	//		return;
+	//	}
+	//}
 
 }
 
@@ -397,4 +398,8 @@ void Enemy::UpdateAnimation()
 		SetFlipbook(_flipbookMove[_dir]);
 		break;
 	}
+}
+
+void Enemy::MoveTowards()
+{
 }
