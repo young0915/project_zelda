@@ -38,7 +38,6 @@ private :
 	vector<Vec2Int> _patrolRoute;
 	vector<Vec2Int> _path;
 
-	int32 _pathIndex = 1;
 
 };
 

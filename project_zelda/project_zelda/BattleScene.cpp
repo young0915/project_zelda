@@ -530,7 +530,7 @@ void BattleScene::SpawnEnemy(int stage)
 			AddActor(zol);
 		}
 
-		/*for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			Vec2Int pos = { 5 + (i != 0) * 6, 6 };
 
@@ -541,7 +541,7 @@ void BattleScene::SpawnEnemy(int stage)
 			batInfo.attackDistance = 3.0f;
 			Enemy* bat = new Enemy(L"Bat", batInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.9f, 0.5f);
 			AddActor(bat);
-		}*/
+		}
 		break;
 
 	case 2:

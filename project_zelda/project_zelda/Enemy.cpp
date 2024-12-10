@@ -186,24 +186,22 @@ void Enemy::CalculateTargetPath()
 
 void Enemy::ChasingTarget()
 {
-	//if (GetArroundTarget())
-	//{
-	//	//SetCellPos(_path[(_path.size() - 1)]);
-	//	//SetState(AIAniState::ATTACK);
-	//	ResetTarget();
-	//	return;
-	//}
+	if (GetArroundTarget())
+		SetState(AIAniState::ATTACK);
 
-	if (_pathIndex >= _path.size())
+	if (!_arrived || _path.empty() || _target == nullptr || GetArroundTarget())
 	{
 		ResetTarget();
 		return;
 	}
 
+	if (_cellPos.x == _path[0].x && _cellPos.y == _path[0].y)
+		_path.erase(_path.begin());
+
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_waitTime += deltaTime;
-	Vec2Int nextDir = _path[_pathIndex] - _cellPos;
 
+	Vec2Int nextDir = _path[0] - _cellPos;
 	Vec2Int nextPos = _cellPos + nextDir;
 
 	if (!CanGo(nextPos))
@@ -211,20 +209,28 @@ void Enemy::ChasingTarget()
 
 	Dir dir = GetDirection(nextDir);
 
-	if (nextPos.x != _cellPos.x || nextPos.y != _cellPos.y)
+	BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	if (scene == nullptr)
+		return;
+
+	_destPos = scene->ConvertPos(nextPos);
+
+	_pos.x = MoveToTarget(static_cast<float>(_pos.x), static_cast<float>(_destPos.x), (_aiInfo.speed * deltaTime));
+	_pos.y = MoveToTarget(static_cast<float>(_pos.y), static_cast<float>(_destPos.y), (_aiInfo.speed * deltaTime));
+
+	if (_waitTime >= (_moveTime/2))
 	{
 		SetDir(dir);
-		MoveTowards(dir);
+		_waitTime = 0;
+		SetCellPos(nextPos, true);
+		_path.erase(_path.begin());
 	}
-	else
-		_pathIndex++;
 }
 
 void Enemy::ResetTarget()
 {
 	_path.clear();
 	_arrived = false;
-	_pathIndex = 0;
 }
 
 void Enemy::HandleMovement(Dir dir)
@@ -238,12 +244,6 @@ void Enemy::HandleMovement(Dir dir)
 		return;
 
 	MoveTowards(dir);
-
-	//if (_waitTime >= _moveTime)
-	//{
-	//	SetCellPos(nextPos);
-	//	_waitTime = 0;
-	//}
 }
 
 void Enemy::BeginPlay()
