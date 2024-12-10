@@ -21,12 +21,14 @@ protected:
 	virtual void SetState(AIAniState state);
 	virtual void UpdateAnimation();
 	virtual	void HandleMovement(Dir dir);
+	virtual void SetHp(int hp, bool isHeal);
 
 	void SetDir(Dir dir);
 	bool GetArroundTarget();
 	bool HasReachedDest();
 	bool CanGo(Vec2Int cellPos);
 	void SetCellPos(Vec2Int cellPos, bool teleport = false);
+
 
 public:
 	Vec2Int GetCellPos() { return _cellPos; }
@@ -39,7 +41,7 @@ protected:
 	float _waitAttackTime = 0.0f;
 	float _attackTime = 0.0f;
 
-
+	int _hp = 0;
 public:
 	// °ø°ÝÇÒ Å¸°Ù.
 	AI* _target = nullptr;

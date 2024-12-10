@@ -19,6 +19,7 @@ AI::AI(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2
 	_flipbookAttack[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackLeft_" + _aiName);
 	_flipbookAttack[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackRight_" + _aiName);
 
+	_hp = _aiInfo.maxHp;
 }
 
 AI::~AI() {}
@@ -59,14 +60,15 @@ void AI::TickAttack(AIAniState state)
 	{
 		if (GetArroundTarget() && _target != nullptr)
 		{
-			_target -= _aiInfo.dmg;
+			// Info 
+			//_target -= _aiInfo.dmg;
 		}
 	}
 
 
 	if (_waitAttackTime >= _attackTime)
 	{
-		SetState(AIAniState::MOVE);
+		//SetState(AIAniState::MOVE);
 		_waitAttackTime = 0;
 	}
 }
@@ -84,6 +86,22 @@ void AI::SetState(AIAniState state)
 void AI::UpdateAnimation() {}
 
 void AI::HandleMovement(Dir dir) {}
+
+void AI::SetHp(int hp, bool isHeal)
+{
+	if (_hp < 0)
+	{
+		SetState(AIAniState::DIE);
+		return;
+	}
+	
+	if (isHeal)
+		_hp += hp;
+	else
+		_hp -= hp;
+
+
+}
 
 bool AI::GetArroundTarget()
 {

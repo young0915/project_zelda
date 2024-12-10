@@ -3,6 +3,7 @@
 #include "ResourceManager.h"
 #include "TimeManager.h"
 #include "InputManager.h"
+#include "BoxCollider.h"
 
 Hero::Hero(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float attackTime) : AI(aiName, info, aiType, attackType, pos, attackTime)
 {
@@ -15,6 +16,12 @@ Hero::Hero(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, 
 	_flipbookAttackBow[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowDown_" + _aiName);
 	_flipbookAttackBow[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowLeft_" + _aiName);
 	_flipbookAttackBow[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowRight_" + _aiName);
+
+
+	BoxCollider* collider = new BoxCollider();
+	collider->SetSize({ 70,70 });
+	collider->SetShowDebug(true);
+	AddComponent(collider);
 
 	SetLayer(LAYER_HERO);
 }

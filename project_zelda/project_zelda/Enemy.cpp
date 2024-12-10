@@ -5,6 +5,8 @@
 #include "BattleScene.h"
 #include "SceneManager.h"
 #include "Hero.h"
+#include "BoxCollider.h"
+#include "CollisionManager.h"
 
 
 Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float movetime, float attackTime)
@@ -76,6 +78,12 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 			_patrolRoute.push_back({ 13,10 });
 		}
 	}
+
+	BoxCollider* collider = new BoxCollider();
+	collider->SetSize({ 50,50 });
+	collider->SetShowDebug(true);
+	AddComponent(collider);
+
 
 }
 
@@ -174,7 +182,6 @@ void Enemy::CalculateTargetPath()
 	{
 		_path.push_back(pos);
 
-		// Ω√¿€¡°
 		if (pos == parent[pos.y][pos.x])
 			break;
 
@@ -187,9 +194,12 @@ void Enemy::CalculateTargetPath()
 void Enemy::ChasingTarget()
 {
 	if (GetArroundTarget())
+	{
 		SetState(AIAniState::ATTACK);
+		return;
+	}
 
-	if (!_arrived || _path.empty() || _target == nullptr || GetArroundTarget())
+	if (!_arrived || _path.empty() || _target == nullptr || GetArroundTarget() || _state == AIAniState::ATTACK || _state == AIAniState::ATTACK_2)
 	{
 		ResetTarget();
 		return;
@@ -218,7 +228,7 @@ void Enemy::ChasingTarget()
 	_pos.x = MoveToTarget(static_cast<float>(_pos.x), static_cast<float>(_destPos.x), (_aiInfo.speed * deltaTime));
 	_pos.y = MoveToTarget(static_cast<float>(_pos.y), static_cast<float>(_destPos.y), (_aiInfo.speed * deltaTime));
 
-	if (_waitTime >= (_moveTime/2))
+	if (_waitTime >= (_moveTime / 2))
 	{
 		SetDir(dir);
 		_waitTime = 0;
@@ -265,11 +275,16 @@ void Enemy::Tick()
 	case AIAniState::MOVE:
 		if (_target == nullptr)
 			TickMove();
-		else if (_target != nullptr && !_arrived)
-			CalculateTargetPath();
-		else if (_target != nullptr && _arrived)
-			ChasingTarget();
+		else
+		{
+			if (!_arrived)
+				CalculateTargetPath();
+			else if (_arrived)
+				ChasingTarget();
+		}
 		break;
+	case AIAniState::DIE:
+			break;
 	}
 }
 
@@ -282,14 +297,13 @@ void Enemy::TickAttack(AIAniState state)
 {
 	Super::TickAttack(state);
 
-	//if (_attackType == AttackType::MELEE_ATTACK)
-	//{
-	//	if (GetArroundTarget() && _target != nullptr)
-	//	{
-	//		_target -= _aiInfo.dmg;
-	//		return;
-	//	}
-	//}
+	/*if (_attackType == AttackType::MELEE_ATTACK)
+	{
+		if (GetArroundTarget() && _target != nullptr)
+		{
+
+		}
+	}*/
 
 }
 
