@@ -56,7 +56,7 @@ void BattleScene::Init()
 		// Player
 		{
 			AIStatus playerStatus;
-			playerStatus.maxHp = 10;
+			playerStatus.maxHp = 100000000;
 			playerStatus.dmg = 5;
 			playerStatus.speed = 200.0f;
 			Hero* player = new Hero(L"Link", playerStatus, AITYPE::HERO, AttackType::MELEE_ATTACK, { 8,9 }, 0.5f);

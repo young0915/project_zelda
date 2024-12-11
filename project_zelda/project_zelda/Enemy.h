@@ -1,5 +1,6 @@
 #pragma once
 #include "AI.h"
+class AI;
 
 class Enemy : public AI
 {

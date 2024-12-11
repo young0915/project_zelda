@@ -48,23 +48,13 @@ void AI::TickMove() {}
 
 void AI::TickAttack(AIAniState state)
 {
-	if (state == AIAniState::NONE || state == AIAniState::IDLE || state == AIAniState::DIE || state == AIAniState::MOVE)
+	if (state == AIAniState::NONE || state == AIAniState::IDLE || state == AIAniState::DIE || state == AIAniState::MOVE || _target == nullptr)
 		return;
 
 	float deltatime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_waitAttackTime += deltatime;
 
 	SetState(state);
-
-	if (_attackType == AttackType::MELEE_ATTACK)
-	{
-		if (GetArroundTarget() && _target != nullptr)
-		{
-			// Info 
-			//_target -= _aiInfo.dmg;
-		}
-	}
-
 
 	if (_waitAttackTime >= _attackTime)
 	{

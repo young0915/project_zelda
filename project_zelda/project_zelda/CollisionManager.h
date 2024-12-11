@@ -7,8 +7,6 @@ class CollisionManager
 
 public:
 	void Init();
-	void Update();
-	void Clear();
 
 	void AddCollider(Collider* col);
 	void RemoveCollider(Collider* col);

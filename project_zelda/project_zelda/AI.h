@@ -2,6 +2,8 @@
 #include "FlipbookActor.h"
 class Flipbook;
 class AI;
+class BoxCollider;
+
 
 class AI : public FlipbookActor
 {
@@ -21,7 +23,7 @@ protected:
 	virtual void SetState(AIAniState state);
 	virtual void UpdateAnimation();
 	virtual	void HandleMovement(Dir dir);
-	virtual void SetHp(int hp, bool isHeal);
+
 
 	void SetDir(Dir dir);
 	bool GetArroundTarget();
@@ -32,6 +34,7 @@ protected:
 
 public:
 	Vec2Int GetCellPos() { return _cellPos; }
+	void SetHp(int hp, bool isHeal);
 
 protected:
 	Vec2Int _cellPos = {};
@@ -45,6 +48,7 @@ protected:
 public:
 	// °ø°ÝÇÒ Å¸°Ù.
 	AI* _target = nullptr;
+	BoxCollider* _col = nullptr;
 
 	AIAniState _state = AIAniState::NONE;
 	AITYPE _aiType = AITYPE::NONE;

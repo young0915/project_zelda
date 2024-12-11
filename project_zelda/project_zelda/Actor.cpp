@@ -4,6 +4,8 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 #include "AI.h"
+#include "Enemy.h"
+#include "Hero.h"
 
 Actor::Actor()
 {
@@ -53,7 +55,7 @@ void Actor::AddComponent(Component* component)
 
 
 
-	
+
 	_components.push_back(component);
 }
 
@@ -81,24 +83,3 @@ Component* Actor::GetCollider()
 	return nullptr;
 }
 
-void Actor::OnComponentBeginOverlap(Collider* collider, Collider* other)
-{
-	AI* ai = dynamic_cast<AI*>(other);
-	AI* ai_me = dynamic_cast<AI*>(collider);
-
-	if (ai_me != nullptr && ai_me->_state == AIAniState::ATTACK)
-	{
-		ai_me;
-	}
-}
-
-void Actor::OnComponentEndOverlap(Collider* collider, Collider* other)
-{
-	AI* ai = dynamic_cast<AI*>(other);
-	AI* ai_me = dynamic_cast<AI*>(collider);
-
-	if (ai_me != nullptr && ai_me->_state == AIAniState::ATTACK)
-	{
-		ai_me;
-	}
-}

@@ -17,6 +17,7 @@ protected:
 
 	virtual void TickIdle() override;
 	virtual void TickMove() override;
+	virtual void TickAttack(AIAniState state) override;
 
 	virtual void UpdateAnimation() override;
 	virtual void HandleMovement(Dir dir) override;

@@ -22,6 +22,9 @@ Hero::Hero(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, 
 	collider->SetSize({ 70,70 });
 	collider->SetShowDebug(true);
 	AddComponent(collider);
+	collider->SetCollisionLayer(CLT_HERO);
+	collider->SetCollisionFlag((1 << CLT_ENEMY) | (1 << CLT_PROJECTILE));
+	_col = collider;
 
 	SetLayer(LAYER_HERO);
 }
@@ -55,6 +58,8 @@ void Hero::Tick()
 	case AIAniState::MOVE:
 		TickMove();
 		break;
+	case AIAniState::DIE:
+		break;
 	}
 }
 
@@ -80,9 +85,7 @@ void Hero::TickIdle()
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::Z))
 		TickAttack(AIAniState::ATTACK);
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::X))
-	{
 		SetState(AIAniState::ATTACK_2);
-	}
 	else
 	{
 		_keyPressed = false;
@@ -121,6 +124,29 @@ void Hero::TickMove()
 			break;
 		}
 	}
+}
+
+void Hero::TickAttack(AIAniState state)
+{
+
+	float deltatime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	_waitAttackTime += deltatime;
+
+	SetState(state);
+
+	if (_target != nullptr &&_col->CheckCollision(_target->_col))
+	{
+		_target->SetHp(_aiInfo.dmg, false);
+		return;
+	}
+
+	if (_waitAttackTime >= _attackTime)
+	{
+		SetState(AIAniState::MOVE);
+		_waitAttackTime = 0;
+	}
+
+
 }
 
 void Hero::UpdateAnimation()
