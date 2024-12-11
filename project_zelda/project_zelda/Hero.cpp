@@ -4,6 +4,9 @@
 #include "TimeManager.h"
 #include "InputManager.h"
 #include "BoxCollider.h"
+#include "BattleScene.h"
+#include "SceneManager.h"
+#include "Enemy.h"
 
 Hero::Hero(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float attackTime) : AI(aiName, info, aiType, attackType, pos, attackTime)
 {
@@ -59,6 +62,11 @@ void Hero::Tick()
 		TickMove();
 		break;
 	case AIAniState::DIE:
+		/*BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		if (scene == nullptr)
+			return;
+		scene->AIClear();*/
+
 		break;
 	}
 }
@@ -128,22 +136,44 @@ void Hero::TickMove()
 
 void Hero::TickAttack(AIAniState state)
 {
-
 	float deltatime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_waitAttackTime += deltatime;
 
 	SetState(state);
 
-	if (_target != nullptr &&_col->CheckCollision(_target->_col))
-	{
-		_target->SetHp(_aiInfo.dmg, false);
-		return;
-	}
 
 	if (_waitAttackTime >= _attackTime)
 	{
 		SetState(AIAniState::MOVE);
+
 		_waitAttackTime = 0;
+	}
+
+	BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	if (scene == nullptr)
+		return;
+
+	if (scene->_actors[LAYER_MONSTER].size() > 0)
+	{
+		// 모든 영웅 확인
+		for (Actor* actor : scene->_actors[LAYER_MONSTER]) {
+			Enemy* enemy = dynamic_cast<Enemy*>(actor);
+
+			if (enemy != nullptr) {
+				Vec2Int dist = (_cellPos - enemy->GetCellPos());
+				if (dist.Length() <= _aiInfo.attackDistance) {
+					_target = enemy;
+					break;
+				}
+			}
+		}
+	}
+
+	if (_target != nullptr && _col->CheckCollision(_target->_col))
+	{
+		_target->SetHp(_aiInfo.dmg, false);
+		_target = nullptr;
+		return;
 	}
 
 

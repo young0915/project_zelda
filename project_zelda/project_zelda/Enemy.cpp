@@ -299,11 +299,11 @@ void Enemy::Render(HDC hdc)
 void Enemy::TickAttack(AIAniState state)
 {
 	Super::TickAttack(state);
-	if (_col->CheckCollision(_target->_col))
+	/*if (_col->CheckCollision(_target->_col))
 	{
 		_target->SetHp(_aiInfo.dmg,false);
 		return;
-	}
+	}*/
 }
 
 void Enemy::TickMove()

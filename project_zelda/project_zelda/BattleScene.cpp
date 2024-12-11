@@ -59,6 +59,7 @@ void BattleScene::Init()
 			playerStatus.maxHp = 100000000;
 			playerStatus.dmg = 5;
 			playerStatus.speed = 200.0f;
+			playerStatus.attackDistance = 1;
 			Hero* player = new Hero(L"Link", playerStatus, AITYPE::HERO, AttackType::MELEE_ATTACK, { 8,9 }, 0.5f);
 			AddActor(player);
 		}
@@ -593,7 +594,7 @@ void BattleScene::SpawnEnemy(int stage)
 			Vec2Int pos = { 3 + (i != 0) * 10, 6 };
 
 			AIStatus darknutInfo;
-			darknutInfo.maxHp = 10;
+			darknutInfo.maxHp = 100000;
 			darknutInfo.dmg = 5;
 			darknutInfo.speed = 19.0f;
 			darknutInfo.attackDistance = 1.0f;
@@ -615,6 +616,12 @@ void BattleScene::AIClear()
 		SAFE_DELETE(enemy);
 
 	_actors[LAYER_MONSTER].clear();
+
+	// Enemy
+	for (Actor* hero : _actors[LAYER_HERO])
+		SAFE_DELETE(hero);
+
+	_actors[LAYER_HERO].clear();
 
 	// tile
 	_tilemapActor = nullptr;
