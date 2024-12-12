@@ -20,11 +20,10 @@ public:
 	bool CanGo(Vec2Int cellPos);
 	Vec2 ConvertPos(Vec2Int cellPos);
 
-
 public:
 	class TilemapActor* _tilemapActor = nullptr;
 	bool _heroDataLoad = false;
-	int _stageIndex = 1;
+	int _stageIndex = 2;
 
 };
 

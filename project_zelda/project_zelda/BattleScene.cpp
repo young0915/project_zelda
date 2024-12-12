@@ -240,6 +240,13 @@ void BattleScene::LoadResource(int stage)
 			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp_Octoroc");
 			fb->SetInfo({ texture, L"FB_MoveUp_Octoroc", {100, 100}, 0, 1, 7, 0.5f });
 		}
+		// Item
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+			Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Octoroc_Item");
+			fb->SetInfo({ texture, L"FB_Octoroc_Item", {100, 100}, 0, 2, 9, 0.5f });
+		}
+	
 #pragma endregion
 		break;
 
@@ -553,9 +560,9 @@ void BattleScene::SpawnEnemy(int stage)
 			AIStatus octorokInfo;
 			octorokInfo.maxHp = 10;
 			octorokInfo.dmg = 5;
-			octorokInfo.speed = 17.0f;
-			octorokInfo.attackDistance = 1.0f;
-			Enemy* octorok = new Enemy(L"Octoroc", octorokInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.2f, 0.5f);
+			octorokInfo.speed = 50.0f;
+			octorokInfo.attackDistance = 2.0f;
+			Enemy* octorok = new Enemy(L"Octoroc", octorokInfo, AITYPE::MONSTER, AttackType::RANGED_ATTACK, pos, 2.0f, 0.5f);
 			AddActor(octorok);
 		}
 		break;

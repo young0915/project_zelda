@@ -61,10 +61,10 @@ void Hero::Tick()
 		TickMove();
 		break;
 	case AIAniState::DIE:
-		/*BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		if (scene == nullptr)
 			return;
-		scene->RemoveActor(this);*/
+		scene->RemoveActor(this);
 
 		break;
 	}

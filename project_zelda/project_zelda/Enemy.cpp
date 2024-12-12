@@ -86,6 +86,21 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 	_col->SetCollisionLayer(CLT_ENEMY);
 	_col->SetCollisionFlag((1 << CLT_HERO));
 	AddComponent(_col);
+
+	
+	// item
+	// TO-DO 
+	if (_aiName == L"Octoroc")
+	{
+		_flipbookItem[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Octoroc_Item");
+		_flipbookItem[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Octoroc_Item");
+		_flipbookItem[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Octoroc_Item");
+		_flipbookItem[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Octoroc_Item");
+	}
+	else if (_aiName == L"Moblin_A")
+	{
+
+	}
 }
 
 Enemy::~Enemy() {}
@@ -278,18 +293,34 @@ void Enemy::Tick()
 			TickMove();
 		else
 		{
-			if (!_arrived)
-				CalculateTargetPath();
-			else if (_arrived)
-				ChasingTarget();
+			if (_attackType == AttackType::MELEE_ATTACK)
+			{
+				if (!_arrived)
+					CalculateTargetPath();
+				else if (_arrived)
+					ChasingTarget();
+			}
+			else
+			{
+				// 플레이어쪽으로 방향 전환
+			
+				if (_cellPos.x == _target->GetCellPos().x || _cellPos.y == _target->GetCellPos().y)
+				{
+					Vec2Int dist = (_cellPos - _target->GetCellPos());
+					if (dist.Length() <= _aiInfo.attackDistance)
+						SetState(AIAniState::ATTACK);
+				}
+				else
+					_target = nullptr;
+			}
 		}
 		break;
 	case AIAniState::DIE:
-		/*BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		if (scene == nullptr)
 			return;
-		scene->RemoveActor(this);*/
-			break;
+		scene->RemoveActor(this);
+		break;
 	}
 }
 
@@ -301,11 +332,45 @@ void Enemy::Render(HDC hdc)
 void Enemy::TickAttack(AIAniState state)
 {
 	Super::TickAttack(state);
-	if (_target != nullptr&&_col->CheckCollision(_target->_col))
+
+	if (_attackType == AttackType::MELEE_ATTACK)
 	{
-		_target->SetHp(_aiInfo.dmg,false);
-		return;
+		if (_target != nullptr && _col->CheckCollision(_target->_col))
+		{
+			_target->SetHp(_aiInfo.dmg, false);
+			return;
+		}
 	}
+	else if(_attackType == AttackType::RANGED_ATTACK)
+	{
+		if (_target != nullptr)
+		{
+			Vec2Int attackDir = _cellPos - _target->GetCellPos();
+			Dir dir = GetDirection(attackDir);
+			// 플레이어에게 방향 두기
+			switch (dir)
+			{
+			case DIR_UP:
+				dir = DIR_DOWN;
+				break;
+			case DIR_DOWN:
+				dir = DIR_UP;
+				break;
+			case DIR_LEFT:
+				dir = DIR_RIGHT;
+				break;
+			case DIR_RIGHT:
+				dir = DIR_LEFT;
+				break;
+			}
+			SetDir(dir);
+
+			// TO-DO 발사 
+			//if()
+
+		}
+	}
+
 }
 
 void Enemy::TickMove()

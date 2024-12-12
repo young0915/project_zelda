@@ -38,6 +38,8 @@ public:
 
 protected:
 	Vec2Int _cellPos = {};
+	// 공격 타입이 원거리형 AI인 경우 
+	Flipbook* _flipbookItem[4] = {};
 	Flipbook* _flipbookMove[4] = {};
 	Flipbook* _flipbookAttack[4] = {};
 
