@@ -64,7 +64,7 @@ void Hero::Tick()
 		/*BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		if (scene == nullptr)
 			return;
-		scene->AIClear();*/
+		scene->RemoveActor(this);*/
 
 		break;
 	}

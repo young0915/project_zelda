@@ -86,8 +86,6 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 	_col->SetCollisionLayer(CLT_ENEMY);
 	_col->SetCollisionFlag((1 << CLT_HERO));
 	AddComponent(_col);
-
-
 }
 
 Enemy::~Enemy() {}
@@ -287,6 +285,10 @@ void Enemy::Tick()
 		}
 		break;
 	case AIAniState::DIE:
+		/*BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		if (scene == nullptr)
+			return;
+		scene->RemoveActor(this);*/
 			break;
 	}
 }
