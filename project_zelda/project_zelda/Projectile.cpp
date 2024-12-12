@@ -64,9 +64,14 @@ void Projectile::Tick()
 		break;
 	}
 
-	if (_target != nullptr &&_col->CheckCollision(_target->_col))
+	if (_target != nullptr && _col->CheckCollision(_target->_col))
 	{
 		_target->SetHp(_info.dmg, false);
+		BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		if (scene == nullptr)
+			return;
+		scene->RemoveActor(this);
+
 		return;
 	}
 	//else if (HasExceededRange())
