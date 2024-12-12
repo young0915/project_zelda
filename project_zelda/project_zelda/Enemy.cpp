@@ -7,6 +7,7 @@
 #include "Hero.h"
 #include "BoxCollider.h"
 #include "CollisionManager.h"
+#include "Projectile.h"
 
 
 Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float movetime, float attackTime)
@@ -87,15 +88,18 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 	_col->SetCollisionFlag((1 << CLT_HERO));
 	AddComponent(_col);
 
-	
+
 	// item
 	// TO-DO 
 	if (_aiName == L"Octoroc")
 	{
-		_flipbookItem[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Octoroc_Item");
-		_flipbookItem[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Octoroc_Item");
-		_flipbookItem[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Octoroc_Item");
-		_flipbookItem[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Octoroc_Item");
+		/*	ProjectileInfo info;
+			info.dmg = _aiInfo.dmg;
+			info.speed = 80.0f;
+			info.selfDestructRange = _aiInfo.attackDistance + 2;
+			Projectile* projectTile = new Projectile(_aiName,info, _aiType);*/
+			//_projectTile = projectTile;
+			//projectTile->SetInfo(_pos,  )
 	}
 	else if (_aiName == L"Moblin_A")
 	{
@@ -303,7 +307,7 @@ void Enemy::Tick()
 			else
 			{
 				// 플레이어쪽으로 방향 전환
-			
+
 				if (_cellPos.x == _target->GetCellPos().x || _cellPos.y == _target->GetCellPos().y)
 				{
 					Vec2Int dist = (_cellPos - _target->GetCellPos());
@@ -332,44 +336,66 @@ void Enemy::Render(HDC hdc)
 void Enemy::TickAttack(AIAniState state)
 {
 	Super::TickAttack(state);
+	
 
-	if (_attackType == AttackType::MELEE_ATTACK)
+	if (_target != nullptr)
 	{
-		if (_target != nullptr && _col->CheckCollision(_target->_col))
+		Vec2Int attackDir = _cellPos - _target->GetCellPos();
+		Dir dir = GetDirection(attackDir);
+		// 플레이어에게 방향 두기
+		switch (dir)
 		{
-			_target->SetHp(_aiInfo.dmg, false);
-			return;
+		case DIR_UP:
+			dir = DIR_DOWN;
+			break;
+		case DIR_DOWN:
+			dir = DIR_UP;
+			break;
+		case DIR_LEFT:
+			dir = DIR_RIGHT;
+			break;
+		case DIR_RIGHT:
+			dir = DIR_LEFT;
+			break;
 		}
-	}
-	else if(_attackType == AttackType::RANGED_ATTACK)
-	{
-		if (_target != nullptr)
+		SetDir(dir);
+
+		if (_attackType == AttackType::MELEE_ATTACK)
 		{
-			Vec2Int attackDir = _cellPos - _target->GetCellPos();
-			Dir dir = GetDirection(attackDir);
-			// 플레이어에게 방향 두기
-			switch (dir)
+			if (_target != nullptr && _col->CheckCollision(_target->_col))
 			{
-			case DIR_UP:
-				dir = DIR_DOWN;
-				break;
-			case DIR_DOWN:
-				dir = DIR_UP;
-				break;
-			case DIR_LEFT:
-				dir = DIR_RIGHT;
-				break;
-			case DIR_RIGHT:
-				dir = DIR_LEFT;
-				break;
+				_target->SetHp(_aiInfo.dmg, false);
+				return;
 			}
-			SetDir(dir);
+		}
+		else if (_attackType == AttackType::RANGED_ATTACK)
+		{
 
-			// TO-DO 발사 
-			//if()
+			float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+			_waitAttackTime += deltaTime;
 
+			if (_waitAttackTime >= 5.0f)
+			{
+				ProjectileInfo info;
+				info.dmg = _aiInfo.dmg;
+				info.speed = _aiInfo.speed *2;
+				info.selfDestructRange = _aiInfo.attackDistance + 2;
+				Projectile* projectTile = new Projectile(_aiName, info, AITYPE::MONSTER);
+				projectTile->SetInfo(_cellPos, dir, _target);
+
+				BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+				if (scene == nullptr)
+					return;
+				scene->AddActor(projectTile);
+				_waitAttackTime = 0;
+				return;
+			}
+			
 		}
 	}
+
+
+
 
 }
 

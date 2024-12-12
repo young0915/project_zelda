@@ -1,5 +1,6 @@
 #pragma once
 #include "FlipbookActor.h"
+class Projectile;
 class Flipbook;
 class AI;
 class BoxCollider;
@@ -38,8 +39,6 @@ public:
 
 protected:
 	Vec2Int _cellPos = {};
-	// 공격 타입이 원거리형 AI인 경우 
-	Flipbook* _flipbookItem[4] = {};
 	Flipbook* _flipbookMove[4] = {};
 	Flipbook* _flipbookAttack[4] = {};
 
@@ -60,6 +59,9 @@ public:
 	AIStatus _aiInfo;
 
 	Dir _dir = DIR_DOWN;
+
+	Projectile* _projectTile = nullptr;
+
 
 };
 

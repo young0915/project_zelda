@@ -26,13 +26,14 @@ struct Vector
 		return ret;
 	}
 
-	Vector operator-(const Vector& other)
+	Vector operator-(const Vector& other)const
 	{
 		Vector ret;
 		ret.x = x - other.x;
 		ret.y = y - other.y;
 		return ret;
 	}
+
 
 	Vector operator*(float value)
 	{
@@ -194,4 +195,13 @@ struct Node
 
 	Node(Vec2Int pos, int32 f, int32 g) : pos(pos), f(f), g(g){}
 
+};
+
+
+struct ProjectileInfo
+{
+	int32 dmg = 0;
+	float speed = 0;
+	// 사라질 거리
+	int32 selfDestructRange = 0;
 };
