@@ -80,12 +80,12 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 	}
 
 	BoxCollider* collider = new BoxCollider();
-	collider->SetSize({ 50,50 });
-	collider->SetShowDebug(true);
-	collider->SetCollisionLayer(CLT_ENEMY);
-	collider->SetCollisionFlag((1 << CLT_HERO));
 	_col = collider;
-	AddComponent(collider);
+	_col->SetSize({ 50,50 });
+	_col->SetShowDebug(false);
+	_col->SetCollisionLayer(CLT_ENEMY);
+	_col->SetCollisionFlag((1 << CLT_HERO));
+	AddComponent(_col);
 
 
 }
@@ -299,11 +299,11 @@ void Enemy::Render(HDC hdc)
 void Enemy::TickAttack(AIAniState state)
 {
 	Super::TickAttack(state);
-	/*if (_col->CheckCollision(_target->_col))
+	if (_target != nullptr&&_col->CheckCollision(_target->_col))
 	{
 		_target->SetHp(_aiInfo.dmg,false);
 		return;
-	}*/
+	}
 }
 
 void Enemy::TickMove()

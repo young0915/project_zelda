@@ -20,14 +20,13 @@ Hero::Hero(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, 
 	_flipbookAttackBow[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowLeft_" + _aiName);
 	_flipbookAttackBow[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowRight_" + _aiName);
 
-
 	BoxCollider* collider = new BoxCollider();
-	collider->SetSize({ 70,70 });
-	collider->SetShowDebug(true);
-	AddComponent(collider);
-	collider->SetCollisionLayer(CLT_HERO);
-	collider->SetCollisionFlag((1 << CLT_ENEMY) | (1 << CLT_PROJECTILE));
 	_col = collider;
+	_col->SetSize({ 70,70 });
+	_col->SetShowDebug(false);
+	AddComponent(_col);
+	_col->SetCollisionLayer(CLT_HERO);
+	_col->SetCollisionFlag((1 << CLT_ENEMY) | (1 << CLT_PROJECTILE));
 
 	SetLayer(LAYER_HERO);
 }

@@ -31,6 +31,9 @@ void BoxCollider::Render(HDC hdc)
 {
 	Super::Render(hdc);
 
+	if (_showDebug == false)
+		return;
+
 	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
 	Vec2 pos = GetOwner()->GetPos();
 	pos.x -= (cameraPos.x - GWinSizeX / 2);
