@@ -87,24 +87,6 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 	_col->SetCollisionLayer(CLT_ENEMY);
 	_col->SetCollisionFlag((1 << CLT_HERO));
 	AddComponent(_col);
-
-
-	// item
-	// TO-DO 
-	if (_aiName == L"Octoroc")
-	{
-		/*	ProjectileInfo info;
-			info.dmg = _aiInfo.dmg;
-			info.speed = 80.0f;
-			info.selfDestructRange = _aiInfo.attackDistance + 2;
-			Projectile* projectTile = new Projectile(_aiName,info, _aiType);*/
-			//_projectTile = projectTile;
-			//projectTile->SetInfo(_pos,  )
-	}
-	else if (_aiName == L"Moblin_A")
-	{
-
-	}
 }
 
 Enemy::~Enemy() {}

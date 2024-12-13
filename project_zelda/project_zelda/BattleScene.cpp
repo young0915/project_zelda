@@ -544,17 +544,16 @@ void BattleScene::SpawnEnemy(int stage)
 			AIStatus batInfo;
 			batInfo.maxHp = 10;
 			batInfo.dmg = 5;
-			batInfo.speed = 18.0f;
+			batInfo.speed = 40.0f;
 			batInfo.attackDistance = 3.0f;
-			Enemy* bat = new Enemy(L"Bat", batInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 3.9f, 0.5f);
+			Enemy* bat = new Enemy(L"Bat", batInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.5f, 0.5f);
 			AddActor(bat);
 		}
 		break;
 
 	case 2:
 		// oct 4
-		//for (int i = 0; i < 4; i++)
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			Vec2Int pos = { 3 + (i % 2) * 10, 3 + (i / 2) * 6 };
 			AIStatus octorokInfo;

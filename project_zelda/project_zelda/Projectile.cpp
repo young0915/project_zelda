@@ -15,11 +15,10 @@ Projectile::Projectile(wstring name, ProjectileInfo info, AITYPE owner) : _name(
 	_flipbookItem[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_" + _name + L"_Item");
 	_flipbookItem[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_" + _name + L"_Item");
 
-
 	BoxCollider* collider = new BoxCollider();
 	_col = collider;
 	_col->SetSize({ 40,40 });
-	_col->SetShowDebug(true);
+	_col->SetShowDebug(false);
 	_col->SetCollisionLayer(CLT_PROJECTILE);
 
 	switch (_owner)
@@ -74,10 +73,6 @@ void Projectile::Tick()
 
 		return;
 	}
-	//else if (HasExceededRange())
-	//{
-	//	return;
-	//}
 	SetFlipbook(_flipbookItem[_dir]);
 }
 
