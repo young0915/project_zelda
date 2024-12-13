@@ -560,7 +560,7 @@ void BattleScene::SpawnEnemy(int stage)
 			octorokInfo.maxHp = 10;
 			octorokInfo.dmg = 5;
 			octorokInfo.speed = 50.0f;
-			octorokInfo.attackDistance = 4.0f;
+			octorokInfo.attackDistance = 3.0f;
 			Enemy* octorok = new Enemy(L"Octoroc", octorokInfo, AITYPE::MONSTER, AttackType::RANGED_ATTACK, pos, 2.0f, 10.0f);
 			AddActor(octorok);
 		}
@@ -574,22 +574,22 @@ void BattleScene::SpawnEnemy(int stage)
 			AIStatus bow_moblinInfo;
 			bow_moblinInfo.maxHp = 10;
 			bow_moblinInfo.dmg = 5;
-			bow_moblinInfo.speed = 13.0f;
-			bow_moblinInfo.attackDistance = 3.0f;
-			Enemy* bow_moblin = new Enemy(L"Moblin_A", bow_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.5f, 0.5f);
+			bow_moblinInfo.speed = 35.0f;
+			bow_moblinInfo.attackDistance = 4.0f;
+			Enemy* bow_moblin = new Enemy(L"Moblin_A", bow_moblinInfo, AITYPE::MONSTER, AttackType::RANGED_ATTACK, pos, 1.5f, 0.5f);
 			AddActor(bow_moblin);
 		}
 
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			Vec2Int pos = { 3 + (i == 0) * 10, 3 + (i != 0) * 6 };
 
 			AIStatus spear_moblinInfo;
 			spear_moblinInfo.maxHp = 10;
 			spear_moblinInfo.dmg = 5;
-			spear_moblinInfo.speed = 14.0f;
-			spear_moblinInfo.attackDistance = 1.0f;
-			Enemy* spear_moblin = new Enemy(L"Moblin_S", spear_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.8f, 0.5f);
+			spear_moblinInfo.speed = 60.0f;
+			spear_moblinInfo.attackDistance = 2.0f;
+			Enemy* spear_moblin = new Enemy(L"Moblin_S", spear_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.0f, 0.5f);
 			AddActor(spear_moblin);
 		}
 

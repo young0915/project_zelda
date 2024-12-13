@@ -297,6 +297,7 @@ void Enemy::Tick()
 						SetState(AIAniState::ATTACK);
 				}
 				else
+
 					_target = nullptr;
 			}
 		}
@@ -322,6 +323,15 @@ void Enemy::TickAttack(AIAniState state)
 
 	if (_target != nullptr)
 	{
+		Vec2Int dist = (_cellPos - _target->GetCellPos());
+		if (dist.Length() > _aiInfo.attackDistance) 
+		{
+			_target = nullptr;
+			SetState(AIAniState::MOVE);
+			_arrived = false;
+			return;
+		}
+
 		Vec2Int attackDir = _cellPos - _target->GetCellPos();
 		Dir dir = GetDirection(attackDir);
 		// 플레이어에게 방향 두기

@@ -23,7 +23,7 @@ public:
 public:
 	class TilemapActor* _tilemapActor = nullptr;
 	bool _heroDataLoad = false;
-	int _stageIndex = 2;
+	int _stageIndex = 3;
 
 };
 
