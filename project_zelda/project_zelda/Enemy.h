@@ -32,14 +32,11 @@ public:
 
 private :
 	float _moveTime = 0.0f;
-
+	float _waitMaxAttackTime = 0.0f;
 	float _attackTime = 0.0f;
 	float _waitTime = 0.0f;
 	bool _arrived = false;
 	vector<Vec2Int> _patrolRoute;
 	vector<Vec2Int> _path;
-
-
-
 };
 

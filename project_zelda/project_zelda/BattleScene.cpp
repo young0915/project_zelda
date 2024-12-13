@@ -45,6 +45,8 @@ void BattleScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Zol", L"Sprite\\Monster\\Zol.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Darknut", L"Sprite\\Monster\\Darknut.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Bat", L"Sprite\\Monster\\Bat.bmp", RGB(128, 128, 128));
+	
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\ArrowBullet.bmp", RGB(128, 128, 128));
 
 	LoadResource(_stageIndex);
 	// Tile Load
@@ -483,6 +485,26 @@ void BattleScene::LoadResource(int stage)
 	}
 #pragma endregion
 
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowDown_Item");
+		fb->SetInfo({ texture, L"FB_ArrowDown_Item", {100, 100}, 0, 0, 0, 0.1f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowLeft_Item");
+		fb->SetInfo({ texture, L"FB_ArrowLeft_Item", {100, 100}, 0, 0, 1, 0.1f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowRight_Item");
+		fb->SetInfo({ texture, L"FB_ArrowRight_Item", {100, 100}, 0, 0, 2, 0.1f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowUp_Item");
+		fb->SetInfo({ texture, L"FB_ArrowUp_Item", {100, 100}, 0, 0, 3, 0.1f });
+	}
 }
 
 void BattleScene::SetStage(int stage)

@@ -87,6 +87,9 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 	_col->SetCollisionLayer(CLT_ENEMY);
 	_col->SetCollisionFlag((1 << CLT_HERO));
 	AddComponent(_col);
+
+
+	_waitMaxAttackTime = (_attackType == AttackType::RANGED_ATTACK && _aiName == L"Octoroc") ? 5.0f : 0.5f;
 }
 
 Enemy::~Enemy() {}
@@ -362,19 +365,17 @@ void Enemy::TickAttack(AIAniState state)
 		}
 		else if (_attackType == AttackType::RANGED_ATTACK)
 		{
-
 			float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 			_waitAttackTime += deltaTime;
-
-			if (_waitAttackTime >= 5.0f)
+			
+			if (_waitAttackTime >= _waitMaxAttackTime)
 			{
 				ProjectileInfo info;
 				info.dmg = _aiInfo.dmg;
 				info.speed = _aiInfo.speed *2;
 				info.selfDestructRange = _aiInfo.attackDistance + 2;
-				Projectile* projectTile = new Projectile(_aiName, info, AITYPE::MONSTER);
+				Projectile* projectTile = new Projectile((_aiName == L"Octoroc") ? _aiName : L"Arrow", info, AITYPE::MONSTER);
 				projectTile->SetInfo(_cellPos, dir, _target);
-
 				BattleScene* scene = dynamic_cast<BattleScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 				if (scene == nullptr)
 					return;

@@ -16,13 +16,13 @@ public:
 
 	void SetInfo(Vec2Int initPos, Dir dir, AI* target);
 
-	bool HasExceededRange() const 
+	bool HasExceededRange() const
 	{
 		return (_pos - _initialPos).LengthSquared() >= _info.selfDestructRange;
 	}
 
 public:
-	
+
 	AITYPE _owner;
 	AI* _target;
 	Dir _dir;
@@ -35,5 +35,7 @@ public:
 	wstring _name;
 	bool _fire = false;
 
+	Dir dirArr[4] = { DIR_UP , DIR_LEFT , DIR_RIGHT , DIR_UP };
+	wstring strDir[4] = {L"Down", L"Left" , L"Right" , L"Up" };
 };
 

@@ -10,10 +10,17 @@
 
 Projectile::Projectile(wstring name, ProjectileInfo info, AITYPE owner) : _name(name), _info(info), _owner(owner)
 {
-	_flipbookItem[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_" + _name + L"_Item");
-	_flipbookItem[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_" + _name + L"_Item");
-	_flipbookItem[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_" + _name + L"_Item");
-	_flipbookItem[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_" + _name + L"_Item");
+	if (_name == L"Octoroc")
+	{
+		for (int32 i = 0; i < DIR_COUNT; i++)
+			_flipbookItem[dirArr[i]] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_" + _name + L"_Item");
+	}
+	else
+	{
+		for (int32 i = 0; i < DIR_COUNT; i++)
+			_flipbookItem[dirArr[i]] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Arrow" + strDir[i] + L"_Item");
+	}
+
 
 	BoxCollider* collider = new BoxCollider();
 	_col = collider;
