@@ -341,10 +341,10 @@ void Enemy::TickAttack(AIAniState state)
 		switch (dir)
 		{
 		case DIR_UP:
-			dir = DIR_DOWN;
+			dir = (_aiName == L"Darknut") ? DIR_UP : DIR_DOWN;
 			break;
 		case DIR_DOWN:
-			dir = DIR_UP;
+			dir = (_aiName == L"Darknut") ? DIR_DOWN : DIR_UP;
 			break;
 		case DIR_LEFT:
 			dir = DIR_RIGHT;
