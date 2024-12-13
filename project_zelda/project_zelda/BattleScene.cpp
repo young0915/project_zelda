@@ -79,6 +79,16 @@ void BattleScene::Update()
 {
 	Super::Update();
 
+	if (_actors[LAYER_MONSTER].size() <= 0)
+	{
+		if (_stageIndex < 6)
+		{
+			_stageIndex++;
+			Init();
+		}
+	}
+
+
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 	{
 		AIClear();
@@ -622,18 +632,14 @@ void BattleScene::SpawnEnemy(int stage)
 			Vec2Int pos = { 3 + (i != 0) * 10, 6 };
 
 			AIStatus darknutInfo;
-			darknutInfo.maxHp = 100000;
+			darknutInfo.maxHp = 10;
 			darknutInfo.dmg = 5;
-			darknutInfo.speed = 19.0f;
-			darknutInfo.attackDistance = 1.0f;
-			Enemy* darknut = new Enemy(L"Darknut", darknutInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 2.6f, 0.5f);
+			darknutInfo.speed = 70.0f;
+			darknutInfo.attackDistance = 2.0f;
+			Enemy* darknut = new Enemy(L"Darknut", darknutInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.5f, 0.5f);
 			AddActor(darknut);
 		}
 		break;
-	case 5:
-
-		break;
-
 	}
 }
 
