@@ -88,7 +88,7 @@ void BattleScene::Update()
 		}
 	}
 
-
+	// cheat
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 	{
 		AIClear();
@@ -629,8 +629,7 @@ void BattleScene::SpawnEnemy(int stage)
 	case 4:
 		for (int i = 0; i < 2; i++)
 		{
-			Vec2Int pos = { 3 + (i != 0) * 10, 6 };
-
+			Vec2Int pos = { 3 + (i != 0) * 10, ( i ==0 )? 3 : 10};
 			AIStatus darknutInfo;
 			darknutInfo.maxHp = 10;
 			darknutInfo.dmg = 5;

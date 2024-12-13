@@ -64,19 +64,19 @@ Enemy::Enemy(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType
 	}
 	else if (_aiName == L"Darknut")
 	{
-		if (pos.x == 3 && pos.y == 6)
+		if (pos.x == 3 && pos.y == 3)
 		{
 			_patrolRoute.push_back({ 3, 3 });
 			_patrolRoute.push_back({ 5, 3 });
-			_patrolRoute.push_back({ 3, 10 });
-			_patrolRoute.push_back({ 5, 10 });
+			_patrolRoute.push_back({ 5,9 });
+			_patrolRoute.push_back({ 3,9 });
 		}
 		else
 		{
-			_patrolRoute.push_back({ 13,3 });
+			_patrolRoute.push_back({ 13,9 });
+			_patrolRoute.push_back({ 11,9 });
 			_patrolRoute.push_back({ 11,3 });
-			_patrolRoute.push_back({ 11,10 });
-			_patrolRoute.push_back({ 13,10 });
+			_patrolRoute.push_back({ 13,3 });
 		}
 	}
 
