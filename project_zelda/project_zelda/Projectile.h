@@ -35,7 +35,7 @@ public:
 	wstring _name;
 	bool _fire = false;
 
-	Dir dirArr[4] = { DIR_UP , DIR_LEFT , DIR_RIGHT , DIR_UP };
-	wstring strDir[4] = {L"Down", L"Left" , L"Right" , L"Up" };
+	Dir dirArr[4] = { DIR_UP , DIR_LEFT , DIR_RIGHT , DIR_DOWN };
+	wstring strDir[4] = { L"Up", L"Left" , L"Right" , L"Down" };
 };
 

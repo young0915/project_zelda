@@ -10,15 +10,12 @@
 
 Hero::Hero(wstring aiName, AIStatus info, AITYPE aiType, AttackType attackType, Vec2Int pos, float attackTime) : AI(aiName, info, aiType, attackType, pos, attackTime)
 {
-	_flipbookIdle[DIR_UP]	= GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleUp_" + _aiName);
-	_flipbookIdle[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleDown_" + _aiName);
-	_flipbookIdle[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleLeft_" + _aiName);
-	_flipbookIdle[DIR_RIGHT]= GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleRight_" + _aiName);
+	for (int32 i = 0; i < DIR_COUNT; i++)
+		_flipbookIdle[dirArr[i]] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Idle" + strDir[i] + _aiName);
 
-	_flipbookAttackBow[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowUp_" + _aiName);
-	_flipbookAttackBow[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowDown_" + _aiName);
-	_flipbookAttackBow[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowLeft_" + _aiName);
-	_flipbookAttackBow[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBowRight_" + _aiName);
+	for (int32 i = 0; i < DIR_COUNT; i++)
+		_flipbookAttackBow[dirArr[i]] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackBow" + strDir[i] + _aiName);
+
 
 	BoxCollider* collider = new BoxCollider();
 	_col = collider;

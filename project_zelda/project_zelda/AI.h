@@ -63,5 +63,8 @@ public:
 	Projectile* _projectTile = nullptr;
 
 
+	Dir dirArr[4] = { DIR_UP , DIR_LEFT , DIR_RIGHT , DIR_DOWN };
+	wstring strDir[4] = { L"Up_", L"Left_" , L"Right_" , L"Down_" };
+
 };
 
