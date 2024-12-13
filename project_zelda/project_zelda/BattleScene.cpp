@@ -620,7 +620,7 @@ void BattleScene::SpawnEnemy(int stage)
 			spear_moblinInfo.maxHp = 10;
 			spear_moblinInfo.dmg = 5;
 			spear_moblinInfo.speed = 60.0f;
-			spear_moblinInfo.attackDistance = 2.0f;
+			spear_moblinInfo.attackDistance = 3.0f;
 			Enemy* spear_moblin = new Enemy(L"Moblin_S", spear_moblinInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.0f, 0.5f);
 			AddActor(spear_moblin);
 		}
@@ -634,7 +634,7 @@ void BattleScene::SpawnEnemy(int stage)
 			darknutInfo.maxHp = 10;
 			darknutInfo.dmg = 5;
 			darknutInfo.speed = 70.0f;
-			darknutInfo.attackDistance = 2.0f;
+			darknutInfo.attackDistance = 3.0f;
 			Enemy* darknut = new Enemy(L"Darknut", darknutInfo, AITYPE::MONSTER, AttackType::MELEE_ATTACK, pos, 1.5f, 0.5f);
 			AddActor(darknut);
 		}
